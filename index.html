@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Team Allocation & Timesheet Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F1F4F2;--surface:#fff;--surface2:#F6F8F7;--line:#DBE2DE;--line2:#EAEEEC;--ink:#14201B;--ink2:#46554E;--ink3:#76847D;--nav:#0F2F27;--nav2:#1B4A3E;--navink:#CFE3DA;--navdim:#7FA394;--brand:#17705A;--brandink:#fff;--mint:#DDF0E6;--mintink:#0E5744;--amber:#A96A0C;--amberbg:#FBEFD6;--red:#B3261E;--redbg:#FBE4E1;--blue:#2F5F9E;--bluebg:#E2ECF8;--fa:#17705A;--cs:#3C6EB4;--int:#C88A1E;--grid:#E4E9E6;--hatch:#9BC9B8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D1512;--surface:#141D19;--surface2:#19241F;--line:#2A3933;--line2:#212E29;--ink:#E5EEE9;--ink2:#AEC0B7;--ink3:#7D9088;--nav:#0A1813;--nav2:#173A31;--navink:#B8CEC4;--navdim:#6F8E80;--brand:#3DBF9A;--brandink:#06251C;--mint:#173A2F;--mintink:#8FE0C3;--amber:#E0A94A;--amberbg:#3A2E14;--red:#F0837B;--redbg:#3D1C19;--blue:#7FAAE3;--bluebg:#1C2D45;--fa:#3DBF9A;--cs:#7FAAE3;--int:#E0A94A;--grid:#25332D;--hatch:#2C6553;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0D1512;--surface:#141D19;--surface2:#19241F;--line:#2A3933;--line2:#212E29;--ink:#E5EEE9;--ink2:#AEC0B7;--ink3:#7D9088;--nav:#0A1813;--nav2:#173A31;--navink:#B8CEC4;--navdim:#6F8E80;--brand:#3DBF9A;--brandink:#06251C;--mint:#173A2F;--mintink:#8FE0C3;--amber:#E0A94A;--amberbg:#3A2E14;--red:#F0837B;--redbg:#3D1C19;--blue:#7FAAE3;--bluebg:#1C2D45;--fa:#3DBF9A;--cs:#7FAAE3;--int:#E0A94A;--grid:#25332D;--hatch:#2C6553;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 "Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,h4{margin:0;font-weight:600}
+a{color:var(--brand)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.app{display:grid;grid-template-columns:238px minmax(0,1fr);min-height:100vh}
+.nav{background:var(--nav);color:var(--navink);position:sticky;top:env(safe-area-inset-top,0px);height:100vh;overflow:auto;padding:14px 10px 28px;display:flex;flex-direction:column;gap:1px}
+.brand{display:flex;gap:10px;align-items:center;padding:4px 8px 12px;color:#fff;font-weight:600;line-height:1.2}
+.brand i{flex:none;width:30px;height:30px;border-radius:7px;background:var(--brand);color:var(--brandink);display:grid;place-items:center;font-style:normal;font-weight:700;font-size:13px}
+.brand small{display:block;font-weight:400;color:var(--navdim);font-size:11.5px}
+.nav h6{margin:14px 10px 4px;font-size:11.5px;font-weight:600;color:var(--navdim)}
+.nav a{display:flex;gap:8px;align-items:center;padding:7px 10px;border-radius:7px;color:var(--navink);text-decoration:none;cursor:pointer;font-weight:500;font-size:13.5px}
+.nav a:hover{background:rgba(255,255,255,.07)}
+.nav a.on{background:var(--nav2);color:#fff}
+.nav a .ct{margin-left:auto;background:var(--red);color:#fff;border-radius:9px;font-size:11px;padding:0 6px;line-height:17px}
+.main{min-width:0}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--surface);border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;padding:10px 24px}
+.top h1{font-size:17px}
+.top .sp{flex:1}
+.top .who{font-size:12.5px;color:var(--ink2);text-align:right;line-height:1.25}
+.hb{display:none}
+.filters{display:flex;flex-wrap:wrap;gap:8px 10px;padding:10px 24px;background:var(--surface2);border-bottom:1px solid var(--line);align-items:flex-end}
+.f{display:flex;flex-direction:column;gap:2px;font-size:11.5px;color:var(--ink3)}
+.f select,.f input,.fg input,.fg select,.fg textarea,.inl{height:32px;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:0 8px;font-size:13px;min-width:0}
+.f select{max-width:170px}
+.page{padding:20px 24px 70px;max-width:1560px}
+.ph{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:flex-end;margin-bottom:14px}
+.ph h2{font-size:20px}
+.ph p{margin:2px 0 0;color:var(--ink2);font-size:13px}
+.ph .sp{flex:1}
+.btn{height:32px;padding:0 12px;border:1px solid var(--line);background:var(--surface);border-radius:6px;cursor:pointer;font-weight:500;font-size:13px;white-space:nowrap}
+.btn:hover{background:var(--surface2)}
+.btn.p{background:var(--brand);color:var(--brandink);border-color:var(--brand)}
+.btn.p:hover{filter:brightness(1.07)}
+.btn.d{color:var(--red)}
+.btn.s{height:26px;padding:0 8px;font-size:12px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:14px;box-shadow:0 1px 1px rgba(16,32,26,.04)}
+.card h3{font-size:14.5px;margin-bottom:2px}
+.card .sub{color:var(--ink3);font-size:12.5px;margin-bottom:10px}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px}
+.g2>.card{margin-bottom:0}
+.gap{margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 13px;border-left:3px solid var(--line)}
+.kpi.g{border-left-color:var(--brand)}.kpi.a{border-left-color:var(--amber)}.kpi.r{border-left-color:var(--red)}
+.kpi .l{font-size:12px;color:var(--ink2)}
+.kpi .v{font-size:22px;font-weight:600;margin-top:1px;letter-spacing:-.01em}
+.kpi .v small{font-size:12px;font-weight:500;color:var(--ink3);margin-left:3px}
+.kpi .s{font-size:11.5px;color:var(--ink3);margin-top:1px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.card .tw{border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{background:var(--mint);color:var(--mintink);font-weight:600;text-align:left;padding:7px 10px;white-space:nowrap;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:1}
+td{padding:6px 10px;border-bottom:1px solid var(--line2);white-space:nowrap;vertical-align:middle}
+tbody tr:hover td{background:var(--surface2)}
+td.n,th.n{text-align:right}
+tfoot td{font-weight:600;background:var(--surface2);border-top:2px solid var(--line);border-bottom:0}
+tr.grp td{background:var(--surface2);font-weight:600;color:var(--ink2);font-size:12.5px}
+tr.hl td{background:var(--amberbg)}
+td.wrap{white-space:normal;min-width:180px}
+.pos{color:var(--brand)}.neg{color:var(--red)}.mut{color:var(--ink3)}
+.avail{background:var(--mint);color:var(--mintink);font-weight:600}
+.b{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:500;background:var(--line2);color:var(--ink2);white-space:nowrap}
+.b.g{background:var(--mint);color:var(--mintink)}.b.a{background:var(--amberbg);color:var(--amber)}.b.r{background:var(--redbg);color:var(--red)}.b.b{background:var(--bluebg);color:var(--blue)}
+.pb{height:6px;min-width:70px;background:var(--line2);border-radius:3px;overflow:hidden}
+.pb i{display:block;height:100%;background:var(--brand)}.pb.a i{background:var(--amber)}.pb.r i{background:var(--red)}
+.empty{padding:26px;text-align:center;color:var(--ink3);border:1px dashed var(--line);border-radius:8px;background:var(--surface)}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
+.tabs a{padding:8px 14px;cursor:pointer;color:var(--ink2);border-bottom:2px solid transparent;font-weight:500;white-space:nowrap}
+.tabs a.on{color:var(--brand);border-bottom-color:var(--brand)}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
+.fg label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink2)}
+.fg textarea{height:auto;padding:6px 8px;min-height:64px}
+.fg label.chk{flex-direction:row;align-items:center;gap:8px;height:32px}
+.fg input[type=checkbox]{height:auto;width:16px}
+.inl{height:28px;width:84px}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink2);margin-bottom:6px}
+.leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--ink3);font-size:10px;font-family:inherit}
+.chart .gl{stroke:var(--grid);stroke-width:1}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.runway{position:relative;height:34px;background:var(--line2);border-radius:5px;margin:30px 0 26px}
+.runway .ach{position:absolute;left:0;top:0;bottom:0;background:var(--brand);border-radius:5px 0 0 5px}
+.runway .prj{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,var(--hatch) 0 5px,transparent 5px 10px);border:1px dashed var(--brand)}
+.runway .mk{position:absolute;top:-8px;bottom:-8px;width:2px;background:var(--ink)}
+.runway .mk span,.runway .pt span{position:absolute;white-space:nowrap;font-size:11.5px;color:var(--ink2)}
+.runway .mk span{top:-18px;left:50%;transform:translateX(-50%)}
+.runway .pt{position:absolute;top:0;bottom:0;width:0}
+.runway .pt span{bottom:-20px;left:0;transform:translateX(-50%)}
+.hero{display:flex;flex-wrap:wrap;gap:6px 24px;align-items:baseline}
+.hero strong{font-size:15px}
+.mb{position:fixed;inset:0;background:rgba(8,18,14,.55);display:grid;place-items:center;z-index:100;padding:16px}
+.m{background:var(--surface);border-radius:10px;width:min(640px,100%);max-height:92vh;overflow:auto;padding:18px 20px;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.m.w{width:min(860px,100%)}
+.m h3{font-size:16px;margin-bottom:10px}
+.m .ft{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.err{color:var(--red);font-size:12.5px;margin-top:8px;min-height:16px}
+.note{font-size:12.5px;color:var(--ink2);background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin-bottom:12px}
+.note.a{background:var(--amberbg);border-color:transparent;color:var(--amber)}
+.note.r{background:var(--redbg);border-color:transparent;color:var(--red)}
+.note.g{background:var(--mint);border-color:transparent;color:var(--mintink)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
+#toast div{background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:6px;font-size:13px;box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:90vw}
+#toast div.e{background:var(--red);color:#fff}
+.boot{display:grid;place-items:center;min-height:60vh;color:var(--ink3)}
+.prev{border:1px solid var(--line);border-radius:6px;padding:14px;background:#fff;color:#1a1a1a;font-family:Arial,sans-serif;font-size:13px;overflow:auto;max-height:52vh}
+.prev table{font-size:12px}.prev th{background:#e8f3ed;color:#0e5744;position:static}.prev td{color:#1a1a1a;background:#fff!important}
+.sec{display:flex;align-items:center;gap:10px;margin:18px 0 8px}.sec h3{font-size:15px}
+.tag{font-size:11.5px;color:var(--ink3)}
+.bar-h{display:flex;align-items:center;gap:8px}
+@media (max-width:960px){
+.app{grid-template-columns:minmax(0,1fr)}
+.nav{position:fixed;left:-260px;width:250px;z-index:60;transition:left .18s;top:0;padding-top:calc(14px + env(safe-area-inset-top,0px))}
+.nav.open{left:0;box-shadow:0 0 40px rgba(0,0,0,.4)}
+.hb{display:inline-flex}
+.top,.filters,.page{padding-left:14px;padding-right:14px}
+.g2{grid-template-columns:minmax(0,1fr)}
+.top .who{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"><div class="boot">Loading portal…</div></div>
+<div id="modal"></div>
+<div id="toast"></div>
+<!--
+  ============================================================================
+  SELF-HOSTED SETUP (only needed if you are NOT opening this inside Claude)
+  1. Create a free project at https://console.firebase.google.com
+  2. Build > Firestore Database > Create database (start in "production mode")
+  3. Build > Authentication > Sign-in method > enable "Anonymous"
+  4. Project settings (gear icon) > General > scroll to "Your apps" > Web app
+     (</>) > register an app > copy the firebaseConfig object it gives you
+  5. Paste those values into FIREBASE_CONFIG below, replacing the empty strings
+  6. Put your own email(s) in ADMIN_EMAILS below
+  7. In Firestore Database > Rules, paste:
+       rules_version = '2';
+       service cloud.firestore {
+         match /databases/{database}/documents {
+           match /{document=**} { allow read, write: if request.auth != null; }
+         }
+       }
+  8. Upload this file (as index.html) to GitHub Pages / any static host.
+  Without steps 1-7, this file still runs, but only as a single-browser demo —
+  nothing will sync between teammates.
+  ============================================================================
+-->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script>
+(()=>{
+'use strict';
+const FIREBASE_CONFIG={apiKey:"",authDomain:"",projectId:"",storageBucket:"",messagingSenderId:"",appId:""}; /* paste your Firebase config here */
+const ADMIN_EMAILS=[]; /* e.g. ['you@yourcompany.com'] — these people get full Admin rights */
+const SITE_PASSWORD=""; /* set any password here (e.g. "acme2026") to lock the whole portal behind it. Leave "" to disable. Anyone who views this file's source can see this password — it blocks casual visitors, not a determined attacker. */
+/* ================= helpers ================= */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone=o=>JSON.parse(JSON.stringify(o));
+const lc=s=>String(s||'').trim().toLowerCase();
+const sum=(a,f)=>{let t=0;for(const x of a)t+=+(f?f(x):x)||0;return t};
+const uid=()=>Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4);
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const pd=s=>{const p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2])};
+const addDays=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ymd(d)};
+const today=()=>ymd(new Date());
+const monthOf=s=>s.slice(0,7);
+const dim=m=>{const p=m.split('-').map(Number);return new Date(p[0],p[1],0).getDate()};
+const mEnd=m=>m+'-'+pad(dim(m));
+const addMonths=(m,n)=>{const p=m.split('-').map(Number);const d=new Date(p[0],p[1]-1+n,1);return d.getFullYear()+'-'+pad(d.getMonth()+1)};
+const prevMonth=m=>addMonths(m,-1);
+const dow=s=>pd(s).getDay();
+const fD=s=>pd(s).toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'});
+const fDL=s=>pd(s).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const fM=m=>pd(m+'-01').toLocaleDateString('en-US',{month:'long',year:'numeric'});
+const fMs=m=>pd(m+'-01').toLocaleDateString('en-US',{month:'short',year:'2-digit'});
+const nf=(v,d=1)=>v==null||!isFinite(v)?'–':(+v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const n0=v=>nf(v,0);
+const hz=v=>v==null||Math.abs(v)<0.005?'–':nf(v);
+const pc=(v,d=0)=>v==null||!isFinite(v)?'–':(v*100).toFixed(d)+'%';
+const sgn=v=>v==null||!isFinite(v)?'–':(v>0.004?'+':v<-0.004?'−':'')+nf(Math.abs(v));
+const SEP='\u0001';
+const CATS=['FA','CS','INT'];
+const CATN={FA:'FA',CS:'CS',INT:'Internal'};
+const DEF={company:'Finance Operations',dailyCap:8,defaultTarget:150,saturdayWork:false,lowPct:0.8,ncPct:0.25,belowTol:1,aboveTol:0.5,holidays:[],leaves:[],
+ weekly:{enabled:true,day:1,time:'09:00',tz:(()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone}catch(e){return 'UTC'}})(),range:'last',employees:true,managers:true,ams:true,hr:true,extra:true},
+ monthly:{enabled:true,day:2}};
+
+/* ================= state ================= */
+const S={ver:0,cfg:{employees:[],clients:[],tasks:[],budgets:{byMonth:{},qc:{}},targets:{byMonth:{}},recips:[],settings:clone(DEF),history:{byMonth:{}}},ts:{},alloc:{},audit:{},cfgReady:false,init:false};
+let HOL=new Set();
+const st=()=>S.cfg.settings;
+const F={month:monthOf(today()),date:'',emp:'',mgr:'',am:'',hr:'',client:'',cat:''};
+let ME=null,VA=null,ID={admin:false,email:'',name:'',uid:null,platform:false};
+let PAGE='',NAVOPEN=false;
+
+function ingestCfg(m){
+ const c=S.cfg;
+ c.employees=(m.employees||{}).items||[];c.clients=(m.clients||{}).items||[];c.tasks=(m.tasks||{}).items||[];
+ c.budgets=Object.assign({byMonth:{},qc:{}},m.budgets||{});c.targets=Object.assign({byMonth:{}},m.targets||{});
+ c.recips=(m.recips||{}).items||[];c.history=Object.assign({byMonth:{}},m.history||{});
+ c.settings=Object.assign(clone(DEF),m.settings||{});c.settings.weekly=Object.assign(clone(DEF.weekly),c.settings.weekly||{});
+ HOL=new Set((c.settings.holidays||[]).map(h=>h.date));
+ S.init=!!m.settings;S.cfgReady=true;S.ver++;
+}
+const empBy=id=>S.cfg.employees.find(e=>e.id===id);
+const clientBy=code=>S.cfg.clients.find(c=>c.code===code);
+const taskBy=n=>S.cfg.tasks.find(t=>t.name===n);
+const eName=id=>{const e=empBy(id);return e?e.name:'(removed)'};
+const eIni=id=>{const e=empBy(id);return e?e.ini:'?'};
+const cName=code=>{const c=clientBy(code);return c?(c.internal?c.name:code+(c.name&&c.name!==code&&c.name!=='Client '+code?' · '+c.name:'')):code};
+const targetOf=(id,m)=>{const t=((S.cfg.targets.byMonth||{})[m]||{})[id];if(t!=null)return +t;const e=empBy(id);return e&&e.target!=null?+e.target:st().defaultTarget};
+const budgetOf=(code,m)=>{const b=((S.cfg.budgets.byMonth||{})[m]||{})[code];if(b!=null)return +b;const c=clientBy(code);return c?+c.budget||0:0};
+function isWD(d){const w=dow(d);if(w===0)return false;if(w===6&&!st().saturdayWork)return false;return !HOL.has(d)}
+function wdList(a,b){const o=[];for(let d=a;d<=b;d=addDays(d,1))if(isWD(d))o.push(d);return o}
+const codeSort=(a,b)=>{const na=/^\d+$/.test(a),nb=/^\d+$/.test(b);if(na&&nb)return a-b;if(na)return -1;if(nb)return 1;return a<b?-1:a>b?1:0};
+
+/* ================= storage (Claude platform db, Firebase, or localStorage) ================= */
+const Store={db:null,mem:{},subs:[],mode:'local',
+ async init(){
+  if(window.claude&&typeof claude.use==='function'){try{this.db=await claude.use('db');if(this.db)this.mode='claude'}catch(e){this.db=null}}
+  if(!this.db&&FIREBASE_CONFIG.apiKey){
+   try{
+    firebase.initializeApp(FIREBASE_CONFIG);this.db=firebase.firestore();this.mode='firebase';
+    if(firebase.auth)try{await firebase.auth().signInAnonymously()}catch(e){toast('Firebase sign-in failed: '+((e&&e.message)||e),1)}
+   }catch(e){this.db=null;this.mode='local';toast('Could not connect to Firebase: '+((e&&e.message)||e),1)}
+  }
+  if(!this.db){try{this.mem=JSON.parse(localStorage.getItem('tsp_local_v1')||'{}')}catch(e){this.mem={}}}
+ },
+ _save(){try{localStorage.setItem('tsp_local_v1',JSON.stringify(this.mem))}catch(e){}},
+ _match(d,w){return w.every(x=>x[1]==='=='?d[x[0]]===x[2]:x[1]==='in'?x[2].indexOf(d[x[0]])>-1:true)},
+ _emit(r){const c=this.mem[r.col]||{},m={};for(const id in c)if(this._match(c[id],r.where))m[id]=clone(c[id]);r.cb(m)},
+ sub(col,where,cb){
+  if(this.db){let q=this.db.collection(col);where.forEach(w=>{q=q.where(w[0],w[1],w[2])});
+   return q.onSnapshot(s=>{const m={};s.docs.forEach(d=>{m[d.id]=d.data()});cb(m)},e=>toast('Live data problem: '+((e&&e.message)||e),1))}
+  const r={col,where,cb};this.subs.push(r);setTimeout(()=>this._emit(r),0);
+  return()=>{this.subs=this.subs.filter(x=>x!==r)};
+ },
+ async get(col,id){if(this.db){const s=await this.db.doc(col+'/'+id).get();return s.exists?clone(s.data()):null}const d=(this.mem[col]||{})[id];return d?clone(d):null},
+ async set(col,id,data){if(this.db){await this.db.doc(col+'/'+id).set(data);return}(this.mem[col]=this.mem[col]||{})[id]=clone(data);this._save();this.subs.filter(r=>r.col===col).forEach(r=>this._emit(r))},
+ async del(col,id){if(this.db){await this.db.doc(col+'/'+id).delete();return}if(this.mem[col])delete this.mem[col][id];this._save();this.subs.filter(r=>r.col===col).forEach(r=>this._emit(r))},
+ async ids(col){if(this.db){const s=await this.db.collection(col).get();return s.docs.map(d=>d.id)}return Object.keys(this.mem[col]||{})}
+};
+const Q={};
+function mut(col,id,fn){const p=col+'/'+id;const run=async()=>{const cur=(await Store.get(col,id))||{};const next=fn(cur);if(next===false)return;await Store.set(col,id,next)};
+ const pr=(Q[p]||Promise.resolve()).catch(()=>{}).then(run);Q[p]=pr;return pr}
+const setCfg=(doc,fn)=>mut('cfg',doc,fn);
+
+let subs={cfg:null,ts:null,al:null,audit:null},subKey='',auditKey='';
+function startCfg(){subs.cfg=Store.sub('cfg',[],m=>{ingestCfg(m);sched()})}
+function monthsNeeded(){const c=monthOf(today());return Array.from(new Set([F.month,prevMonth(F.month),c,prevMonth(c)]))}
+function resubscribe(force){
+ const ms=monthsNeeded();
+ const key=ms.join();if(key===subKey&&!force)return;subKey=key;
+ if(subs.ts)subs.ts();if(subs.al)subs.al();
+ subs.ts=Store.sub('ts',[['month','in',ms]],m=>{S.ts=m;S.ver++;sched()});
+ subs.al=Store.sub('alloc',[['month','in',ms]],m=>{S.alloc=m;S.ver++;sched()});
+}
+function subAudit(){const k=F.month;if(k===auditKey)return;auditKey=k;if(subs.audit)subs.audit();subs.audit=Store.sub('audit',[['month','==',k]],m=>{S.audit=m;S.ver++;sched()})}
+
+/* ================= identity & roles ================= */
+function askIdentityModal(){
+ return new Promise(res=>{
+  openModal('<h3>Sign in</h3><p class="mut">Enter your name and work email to continue. This is remembered on this device and used to match you to your role (Admin / Manager / AM / HR / Employee).</p><form id="mf"><div class="fg">'+
+   fld('name','Your name','text','',{req:1})+fld('email','Work email','email','',{req:1})+
+   '</div><div class="err" id="merr"></div><div class="ft"><button class="btn p">Continue</button></div></form>',
+   {blocking:1,onSubmit:v=>{const em=(v.email||'').trim();if(em.indexOf('@')<1)throw new Error('Enter a valid email address.');res({name:(v.name||'').trim()||em,email:lc(em)})}});
+ });
+}
+async function initIdentity(){
+ if(Store.mode==='claude'){try{const u=await claude.use('user');if(u){const me=await u.me();ID.uid=me.id;ID.email=lc(me.email);ID.name=me.name||'';ID.admin=!!(await u.canEdit())||!!(await u.isOwner());ID.platform=true}}catch(e){}return}
+ if(Store.mode==='firebase'){
+  let saved=null;try{saved=JSON.parse(localStorage.getItem('tsp_who')||'null')}catch(e){}
+  if(!saved||!saved.email)saved=await askIdentityModal();
+  try{localStorage.setItem('tsp_who',JSON.stringify(saved))}catch(e){}
+  ID.email=lc(saved.email);ID.name=saved.name||saved.email;ID.uid='u_'+ID.email.replace(/[^a-z0-9]+/g,'_');
+  ID.admin=ADMIN_EMAILS.map(lc).indexOf(ID.email)>-1;ID.platform=false;return;
+ }
+ ID.admin=true;ID.platform=false;
+}
+function switchAccount(){try{localStorage.removeItem('tsp_who')}catch(e){}ID.email='';ID.name='';ID.admin=false;initIdentity().then(render)}
+function mkWho(admin,email,emp){
+ const roles=new Set(),E=S.cfg.employees;let scope=null;
+ if(admin){roles.add('Admin')}else{
+  const em=lc(email);scope=new Set();
+  if(emp){roles.add('Employee');scope.add(emp.id);if(['Manager','AM','HR'].indexOf(emp.role)>-1)roles.add(emp.role)}
+  E.forEach(x=>{if(!em)return;let h=false;if(lc(x.mgrEmail)===em){roles.add('Manager');h=true}if(lc(x.amEmail)===em){roles.add('AM');h=true}if(lc(x.hrEmail)===em){roles.add('HR');h=true}if(h)scope.add(x.id)});
+ }
+ const pure=!admin&&roles.size===1&&roles.has('Employee');
+ return{admin,email,emp,roles,scope,pure,key:(admin?'A':'')+(emp?emp.id:'')+'|'+Array.from(roles).join()+'|'+(scope?scope.size:'')+'|'+S.cfg.employees.length};
+}
+function who(){
+ const E=S.cfg.employees;
+ if(VA){if(VA.role==='Admin')return mkWho(true,'',null);const e=empBy(VA.empId);return mkWho(false,e?e.email:'',e||null)}
+ const me=ID.email?E.find(e=>lc(e.email)===ID.email)||null:null;
+ if(ID.admin)return mkWho(true,ID.email,me);
+ return mkWho(false,ID.email,me);
+}
+
+/* ================= demo data ================= */
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffle(a,R){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(R()*(i+1));const t=b[i];b[i]=b[j];b[j]=t}return b}
+const E0=[['VJ','Varun','AM',''],['VI','Vipin','Manager','VJ'],['GA','Gazal','Manager','VJ'],['BS','Bhawna S','Manager','VJ'],['TA','Tanya','Employee','VJ'],['NT','Nivya','Employee','VJ'],
+ ['SP','Sanjeevni','Employee','VI'],['SG','Sahil G','Employee','VI'],['PM','Praveen M','Employee','VI'],['KJ','Khushi J','Employee','VI'],
+ ['SR','Sonali','Employee','GA'],['GJ','Garvit','Employee','GA'],['PK','Prabhu K','Employee','GA'],['SM','Shaswat','Employee','GA'],['PA','Pratibha','Employee','GA'],
+ ['AD','Archie','Employee','BS'],['SS','Sakshi','Employee','BS'],['PJ','Palak','Employee','BS']];
+const C0=[['2',285,'Gazal',1],['12',0,'Gazal',0],['20',50,'Gazal',1],['23',0,'Vipin',0],['24',0,'Vipin',0],['28',115,'Bhawna S',1],['29',300,'Bhawna S',1],['38',120,'Varun',1],['45',0,'Varun',0],['46',500,'Vipin',1],['48',25,'Vipin',1],['54',0,'Gazal',1],['56',225,'Gazal',1],['57',75,'Gazal',1],['59',40,'Bhawna S',1],['63',0,'Gazal',0],['65',40,'Vipin',1],['66',150,'Varun',1],['M1',160,'Bhawna S',1],['M2',160,'Bhawna S',1]];
+const TK=[['Book keeping','CS'],['Mortgage','CS'],['Task not defined','FA'],['Model Update','FA'],['XCU Model and CIM','FA'],['Strety, PCR recon, AP mailbox','CS'],['Manco model','FA'],['ARCA Model','FA'],['Sterling model','FA'],['Katz and Sterling model','FA'],['Performance tracker, workbook refresh','FA'],['Amex receipt tracker, AR blitz','CS'],['Ramp new account setup, review','CS'],['Review','FA'],['Grizzly model','FA'],['Sorrento, Grizzly','FA'],['Equilibi vendor analysis','FA'],['SVP report','FA'],['ARCA close file corrections','CS'],['Bank posting','CS'],['Adhoc Tax request & Financials review','CS'],['Urvet Financial & Adhoc','CS'],['Adhoc support','CS'],['Timesheet and FP&A MIS','INT'],['Team meeting','INT'],['Training','INT']];
+const A0=[['M1','Book keeping','SS','',8,0],['M2','Mortgage','PJ','VJ',8,0],['66','Task not defined','VJ','VJ',4,0],['46','Model Update','SP','VI',4,4],['46','Model Update','VI','VI',4,0],['48','XCU Model and CIM','VI','VI',4,0],['46','Model Update','SG','VI',8,0],['46','Strety, PCR recon, AP mailbox','SR','GA',6,2],['65','Manco model','PM','GA',8,0],['56','ARCA Model','KJ','GA',4,0],['56','Sterling model','KJ','GA',4,0],['28','Performance tracker, workbook refresh','AD','BS',5,0],['29','Amex receipt tracker, AR blitz','AD','BS',3,0],['28','Ramp new account setup, review','BS','BS',1,1],['29','Review','BS','BS',1,0],['65','Manco model','GA','GA',1,0],['56','Katz and Sterling model','GA','GA',2,1],['2','Grizzly model','GJ','GA',8,0],['2','Sorrento, Grizzly','GA','GA',2,2],['57','Equilibi vendor analysis','PK','GA',8,0],['20','SVP report','SM','GA',3,0],['20','Review','BS','GA',1,0],['INT','Timesheet and FP&A MIS','BS','BS',0,2],['56','ARCA close file corrections','PA','PA',4,1],['56','Bank posting','PA','PA',3,0],['38','Adhoc Tax request & Financials review','TA','VJ',8,0],['38','Urvet Financial & Adhoc','NT','TA',8,0]];
+const MIX={SS:{M1:1},PJ:{M2:1},VJ:{'66':1},SP:{'46':1},VI:{'46':.5,'48':.5},SG:{'46':1},SR:{'46':1},PM:{'65':1},KJ:{'56':1},AD:{'28':.6,'29':.4},BS:{'28':.25,'29':.15,'20':.1,'59':.2,'INT':.15,'54':.15},GA:{'65':.15,'56':.25,'2':.4,'20':.1,'INT':.1},GJ:{'2':1},PK:{'57':1},SM:{'20':.5,'54':.2,'2':.3},PA:{'56':1},TA:{'38':1},NT:{'38':1}};
+const HIST={'2':[217,218,180,213.1,209.5,230,214,266.5],'20':[45,130,61,103,43.5,44,55.5,30],'28':[110,122,131,129,120,126,137,116],'29':[510,426,450,456,361,367,372,290],'38':[165,175,143,142,193,147,142.3,131],'46':[100,123,486,392,535.5,480,464.75,443.95],'48':[0,0,0,0,0,0,0,43],'54':[77,0,10.5,42.3,27.5,37,44.5,37.5],'56':[108,91,119.5,120.5,98,161,272,261.8],'57':[78,93,39,50,51.5,68,73,57.5],'59':[55,56,49,50.8,52.5,34,41.5,29],'65':[0,0,0,87,0,40,18.5,33],'66':[0,0,0,0,0,0,22.5,81],'M1':[160,160,168,177.5,168,176,184,168],'M2':[0,0,0,72,160,176,168,168]};
+const SEPT={1:127.5,2:128,3:114.5,4:110,5:70,6:0,7:126,8:101,9:122,10:97.5,11:110.5,12:30,13:7.5,14:107,15:128.5,16:104.5,17:103};
+const em=n=>n.toLowerCase().replace(/[^a-z ]/g,'').trim().replace(/\s+/g,'.')+'@example.com';
+
+function buildDemo(){
+ const R=rng(20260921),T=today(),M=monthOf(T),mS=M+'-01';
+ const emps=E0.map(x=>{const mg=E0.find(y=>y[0]===x[3]);return{id:'e_'+x[0].toLowerCase(),name:x[1],ini:x[0],email:em(x[1]),target:x[0]==='VJ'?60:150,hrName:'HR Desk',hrEmail:'hr@example.com',mgrName:mg?mg[1]:'',mgrEmail:mg?em(mg[1]):'',amName:x[0]==='VJ'?'':'Varun',amEmail:x[0]==='VJ'?'':em('Varun'),other:x[0]==='VJ'?'leadership@example.com':'',role:x[2],active:true}});
+ const ids=emps.map(e=>e.id),eid=i=>'e_'+i.toLowerCase();
+ const tasks=TK.map((t,i)=>({id:'t'+i,name:t[0],cat:t[1],bill:t[1]==='INT'?'N':'B',est:0,active:true}));
+ const tk={};tasks.forEach(t=>tk[t.name]=t);
+ const clients=C0.map(c=>({id:c[0],code:c[0],name:'Client '+c[0],budget:c[1],owner:c[2],email:'reports.'+c[0].toLowerCase()+'@example.com',internal:false,active:!!c[3]}));
+ clients.push({id:'INT',code:'INT',name:'Internal',budget:0,owner:'Varun',email:'',internal:true,active:true});
+ const CT={INT:['Timesheet and FP&A MIS','Team meeting','Training']};A0.forEach(a=>{(CT[a[0]]=CT[a[0]]||[]);if(CT[a[0]].indexOf(a[1])<0)CT[a[0]].push(a[1])});CT['54']=['Adhoc support','Review'];CT['59']=['Adhoc support','Review'];
+ const MX={};for(const k in MIX)MX[eid(k)]=MIX[k];
+ const pickC=mx=>{const ks=Object.keys(mx);let r=R()*sum(ks,k=>mx[k]);for(const k of ks){r-=mx[k];if(r<=0)return k}return ks[0]};
+ const entries=[],alRows=[],leaves=[];let n=0;const nid=()=>'s'+(++n).toString(36)+Math.floor(R()*1e4).toString(36);
+ let lastWD=addDays(T,-1);while(dow(lastWD)===0||dow(lastWD)===6)lastWD=addDays(lastWD,-1);
+ for(let d=mS;d<T;d=addDays(d,1)){
+  const w=dow(d),dn=+d.slice(8);let tt;
+  if(M==='2026-09')tt=SEPT[dn]!=null?SEPT[dn]:(dn===18?62:0);else tt=w===0?0:w===6?(R()<.4?40:0):(d===lastWD?60:104+R()*22);
+  if(tt<=0)continue;
+  const wk=w>=1&&w<=5,order=shuffle(ids,R),k=Math.max(1,Math.min(ids.length,Math.round(tt/7.3)));
+  const present=order.slice(0,k),absent=order.slice(k);
+  if(wk&&d!==lastWD)absent.forEach(id=>leaves.push({id:uid(),emp:id,date:d,hours:8}));
+  const h=present.map(()=>Math.max(3,Math.min(8.5,Math.round((tt/k+(R()-.5)*2.4)*2)/2)));
+  let diff=Math.round(tt*2)/2-sum(h);
+  for(let it=0;it<800&&Math.abs(diff)>=.25;it++){const i=it%k,s=diff>0?.5:-.5,v=h[i]+s;if(v>=3&&v<=9){h[i]=v;diff-=s}}
+  present.forEach((id,i)=>{
+   const loc=R()<.6?'WFH':'Office',np=h[i]<=4?1:(R()<.55?2:3);let rem=h[i];const parts=[];
+   for(let j=0;j<np-1;j++){const p=Math.max(.5,Math.min(rem-.5,Math.round(rem*(.3+R()*.4)*2)/2));parts.push(p);rem-=p}parts.push(rem);
+   const forgot=d>addDays(T,-12)&&d!==lastWD&&wk&&R()<.012,rows=[];
+   parts.forEach(p=>{const c=pickC(MX[id]||{INT:1}),tl=CT[c]||['Review'],tn=tl[Math.floor(R()*tl.length)],t=tk[tn];const bill=c==='INT'||R()<.07?'N':'B';
+    if(!forgot)entries.push({id:nid(),date:d,client:c,task:tn,hours:p,cat:t?t.cat:'FA',bill,loc,by:id,at:d+'T18:00:00'});
+    const j=[-1,-.5,0,0,0,0,0,0,0,0,0,0,.5,1][Math.floor(R()*14)];
+    if(R()>.07)rows.push({id:nid(),date:d,emp:id,client:c,task:tn,reviewer:'',hours:Math.max(.5,p+j),type:bill==='B'?'C':'N',cat:t?t.cat:'FA',status:'Delivered'});
+   });
+   if(R()<.06){const c=pickC(MX[id]||{INT:1}),tl=CT[c]||['Review'];rows.push({id:nid(),date:d,emp:id,client:c,task:tl[0],reviewer:'',hours:1.5,type:'C',cat:(tk[tl[0]]||{cat:'FA'}).cat,status:'Delivered'})}
+   let tot=sum(rows,r=>r.hours);while(tot>8.01){const mx=rows.reduce((a,b)=>a.hours>=b.hours?a:b);mx.hours=Math.max(.5,mx.hours-(tot-8));const nt=sum(rows,r=>r.hours);if(nt>=tot)break;tot=nt}
+   if(wk&&d>addDays(T,-10)&&R()<.012){const c=pickC(MX[id]||{INT:1}),tl=CT[c]||['Review'];rows.push({id:nid(),date:d,emp:id,client:c,task:tl[0],reviewer:'',hours:2,type:'C',cat:'FA',status:'Delivered'})}
+   rows.forEach(r=>{r.est=r.hours;alRows.push(r)});
+  });
+  if(d===lastWD)absent.forEach(id=>{const mx=MX[id]||{INT:1};const c=Object.keys(mx).sort((a,b)=>mx[b]-mx[a])[0];alRows.push({id:nid(),date:d,emp:id,client:c,task:(CT[c]||['Review'])[0],reviewer:'',hours:8,est:8,type:'C',cat:'FA',status:'Planned'})});
+ }
+ A0.forEach(a=>{const t=tk[a[1]];const base={date:T,emp:eid(a[2]),client:a[0],task:a[1],reviewer:a[3]?eid(a[3]):'',cat:t?t.cat:'FA',status:'Planned'};
+  if(a[4]>0)alRows.push(Object.assign({id:nid()},base,{hours:a[4],est:a[4],type:'C'}));if(a[5]>0)alRows.push(Object.assign({id:nid()},base,{hours:a[5],est:a[5],type:'N'}))});
+ const alloc={};alRows.forEach(r=>{const d=alloc[r.date]=alloc[r.date]||{date:r.date,month:monthOf(r.date),rows:[]};d.rows.push(r)});
+ const ts={};entries.forEach(e=>{const id=monthOf(e.date)+'_'+e.by;const d=ts[id]=ts[id]||{emp:e.by,month:monthOf(e.date),entries:[]};d.entries.push(e)});
+ const hm=[];for(let i=8;i>=1;i--)hm.push(addMonths(M,-i));
+ const hist={byMonth:{}};hm.forEach((m,i)=>{hist.byMonth[m]={};for(const c in HIST)if(HIST[c][i]>0)hist.byMonth[m][c]=HIST[c][i]});
+ const bud={byMonth:{},qc:{}};hm.concat([M,addMonths(M,1)]).forEach(m=>{bud.byMonth[m]={};clients.forEach(c=>{if(c.budget>0)bud.byMonth[m][c.code]=c.budget})});
+ const settings=Object.assign(clone(DEF),{leaves,holidays:[]});
+ const recips=[{id:'r1',name:'Leadership team',email:'leadership@example.com',type:'Both',active:true},{id:'r2',name:'Finance controller',email:'controller@example.com',type:'Monthly',active:true}];
+ return{cfg:{employees:emps,clients,tasks,budgets:bud,targets:{byMonth:{}},recips,settings,history:hist},alloc,ts};
+}
+async function writeAll(d,cb){
+ const c=d.cfg;let i=0;const tot=Object.keys(d.alloc).length+Object.keys(d.ts).length+8;const step=()=>{i++;if(cb)cb(i,tot)};
+ for(const k of ['employees','clients','tasks','recips']){await Store.set('cfg',k,{items:c[k]});step()}
+ await Store.set('cfg','budgets',c.budgets);step();await Store.set('cfg','targets',c.targets);step();await Store.set('cfg','history',c.history);step();
+ for(const id in d.alloc){await Store.set('alloc',id,d.alloc[id]);step()}
+ for(const id in d.ts){await Store.set('ts',id,d.ts[id]);step()}
+ await Store.set('cfg','settings',c.settings);step();
+}
+async function wipeAll(){
+ for(const col of ['alloc','ts','audit','cfg']){const ids=await Store.ids(col);for(const id of ids)await Store.del(col,id)}
+}
+
+/* ================= metric engine ================= */
+let _f={v:-1};
+function flat(){
+ if(_f.v===S.ver)return _f;
+ const ts=[],al=[],tsDay=new Map(),alDay=new Map(),tsRow=new Map(),lv=new Map();
+ for(const id in S.ts){const d=S.ts[id];for(const e of d.entries||[]){const r=Object.assign({},e,{emp:d.emp});ts.push(r);const k=r.emp+'|'+r.date;tsDay.set(k,(tsDay.get(k)||0)+r.hours);const k2=[r.emp,r.date,r.client,r.task].join(SEP);tsRow.set(k2,(tsRow.get(k2)||0)+r.hours)}}
+ for(const id in S.alloc){const d=S.alloc[id];for(const r0 of d.rows||[]){const r=Object.assign({},r0);if(r.est==null)r.est=r.hours;al.push(r);const k=r.emp+'|'+r.date;alDay.set(k,(alDay.get(k)||0)+r.hours)}}
+ (st().leaves||[]).forEach(l=>{const k=l.emp+'|'+l.date;lv.set(k,(lv.get(k)||0)+(+l.hours||0))});
+ _f={v:S.ver,ts,al,tsDay,alDay,tsRow,lv};return _f;
+}
+function scopeEmps(){const all=S.cfg.employees;return ME.scope?all.filter(e=>ME.scope.has(e.id)):all}
+function filtEmps(){return scopeEmps().filter(e=>(!F.emp||e.id===F.emp)&&(!F.mgr||e.mgrName===F.mgr)&&(!F.am||e.amName===F.am)&&(!F.hr||e.hrName===F.hr))}
+let _C=null;
+function build(){
+ const key=S.ver+'|'+JSON.stringify(F)+'|'+ME.key;if(_C&&_C.key===key)return _C;
+ const s=st(),cap=s.dailyCap||8,T=today(),month=F.month,mS=month+'-01',mE=mEnd(month);
+ const per={from:F.date||mS,to:F.date||mE},mtdTo=F.date||mE,fl=flat();
+ const cand=filtEmps(),eset=new Set(cand.map(e=>e.id));
+ const ok=r=>eset.has(r.emp)&&(!F.client||r.client===F.client)&&(!F.cat||r.cat===F.cat);
+ const ts=fl.ts.filter(r=>r.date>=mS&&r.date<=mE&&ok(r)),al=fl.al.filter(r=>r.date>=mS&&r.date<=mE&&ok(r));
+ const wdAll=wdList(mS,mE);
+ const cutoff=F.date?addDays(F.date,1):(month===monthOf(T)?T:(month<monthOf(T)?addDays(mE,1):mS));
+ const done=wdAll.filter(d=>d<cutoff).length;
+ const wd={total:wdAll.length,done,left:wdAll.length-done,cutoff};
+ const byEmp=new Map();
+ cand.forEach(e=>byEmp.set(e.id,{e,target:targetOf(e.id,month),alloc:0,allocC:0,allocN:0,est:0,act:0,chg:0,nc:0,mtdChg:0,mtdAct:0,doneAct:0,doneChg:0,cap:0}));
+ const showAll=!ME.scope&&!F.emp&&!F.mgr&&!F.am&&!F.hr,cmap=new Map(),tmap=new Map(),byDay=new Map();
+ const getC=code=>{let x=cmap.get(code);if(!x){const c=clientBy(code)||{code,name:code,owner:'',active:true};x={c,budget:budgetOf(code,month),alloc:0,est:0,act:0,chg:0,nc:0,mtdAct:0,mtdChg:0,doneAct:0,emps:new Set()};cmap.set(code,x)}return x};
+ const getT=n=>{let x=tmap.get(n);if(!x){x={name:n,alloc:0,est:0,act:0,chg:0,nc:0,emps:new Set(),clients:new Set()};tmap.set(n,x)}return x};
+ const day=d=>{let x=byDay.get(d);if(!x){x={date:d,alloc:0,est:0,act:0,chg:0,nc:0,FA:0,CS:0,INT:0,emps:new Set()};byDay.set(d,x)}return x};
+ if(showAll)S.cfg.clients.filter(c=>c.active).forEach(c=>getC(c.code));
+ for(let d=per.from;d<=per.to;d=addDays(d,1))day(d);
+ al.forEach(r=>{if(r.date<per.from||r.date>per.to)return;const x=byEmp.get(r.emp),c=getC(r.client),t=getT(r.task),dd=day(r.date);
+  x.alloc+=r.hours;if(r.type==='C')x.allocC+=r.hours;else x.allocN+=r.hours;x.est+=r.est;c.alloc+=r.hours;c.est+=r.est;t.alloc+=r.hours;t.est+=r.est;dd.alloc+=r.hours;dd.est+=r.est});
+ ts.forEach(r=>{const h=r.hours,B=r.bill==='B',x=byEmp.get(r.emp),c=getC(r.client);
+  if(r.date>=per.from&&r.date<=per.to){const t=getT(r.task),dd=day(r.date);x.act+=h;c.act+=h;t.act+=h;dd.act+=h;if(B){x.chg+=h;c.chg+=h;t.chg+=h;dd.chg+=h}else{x.nc+=h;c.nc+=h;t.nc+=h;dd.nc+=h}
+   dd[r.cat]=(dd[r.cat]||0)+h;dd.emps.add(r.emp);c.emps.add(r.emp);t.emps.add(r.emp);t.clients.add(r.client)}
+  if(r.date<=mtdTo){x.mtdAct+=h;c.mtdAct+=h;if(B){x.mtdChg+=h;c.mtdChg+=h}}
+  if(r.date<cutoff){x.doneAct+=h;c.doneAct+=h;if(B)x.doneChg+=h}});
+ const pdays=per.from>T?[]:wdList(per.from,per.to<T?per.to:T);
+ byEmp.forEach(x=>{let cp=0;for(const d of pdays){const has=(fl.tsDay.get(x.e.id+'|'+d)||0)>0;if(d<T||has)cp+=Math.max(0,cap-(fl.lv.get(x.e.id+'|'+d)||0))}
+  x.cap=cp;x.util=cp>0?x.chg/cp:null;x.var=x.act-x.alloc;x.remaining=Math.max(0,x.target-x.mtdChg);x.ach=x.target>0?x.mtdChg/x.target:null;x.pace=wd.total?x.target*done/wd.total:0});
+ const emps=cand.filter(e=>e.active||byEmp.get(e.id).act>0||byEmp.get(e.id).alloc>0).sort((a,b)=>a.name.localeCompare(b.name));
+ const eArr=emps.map(e=>byEmp.get(e.id));
+ cmap.forEach(x=>{x.internal=!!x.c.internal;x.remaining=Math.max(0,x.budget-x.mtdAct);x.used=x.budget>0?x.mtdAct/x.budget:null;
+  x.rate=done>0?x.doneAct/done:null;x.proj=done>0?(wd.left===0?x.mtdAct:x.doneAct+x.rate*wd.left):(wd.left===0?x.mtdAct:null);
+  x.projPct=x.budget>0&&x.proj!=null?x.proj/x.budget:null;x.gap=x.proj!=null?x.budget-x.proj:null});
+ const clients=Array.from(cmap.values()).sort((a,b)=>codeSort(a.c.code,b.c.code));
+ const cls=clients.filter(c=>!c.internal),anyF=!!F.client||!showAll,qc=(S.cfg.budgets.qc||{})[month];
+ const budget=(!anyF&&qc!=null&&qc!=='')?+qc:sum(cls,c=>c.budget);
+ const ach=sum(cls,c=>c.mtdAct),achDone=sum(cls,c=>c.doneAct),rate=done>0?achDone/done:null;
+ const proj=done>0?(wd.left===0?ach:achDone+rate*wd.left):(wd.left===0?ach:null);
+ const capT=sum(eArr,x=>x.cap),chgP=sum(eArr,x=>x.chg);
+ const co={budget,ach,pending:Math.max(0,budget-ach),achPct:budget>0?ach/budget:null,chg:sum(eArr,x=>x.mtdChg),util:capT>0?chgP/capT:null,rate,proj,projPct:budget>0&&proj!=null?proj/budget:null,total:sum(eArr,x=>x.act),alloc:sum(eArr,x=>x.alloc),internal:sum(clients.filter(c=>c.internal),c=>c.mtdAct)};
+ const tot={target:sum(eArr,x=>x.target),alloc:sum(eArr,x=>x.alloc),est:sum(eArr,x=>x.est),act:sum(eArr,x=>x.act),chg:sum(eArr,x=>x.chg),nc:sum(eArr,x=>x.nc),cap:capT,mtdChg:sum(eArr,x=>x.mtdChg),remaining:sum(eArr,x=>x.remaining)};
+ tot.util=capT>0?tot.chg/capT:null;tot.ach=tot.target>0?tot.mtdChg/tot.target:null;tot.var=tot.act-tot.alloc;
+ _C={key,month,per,mtdTo,wd,cap,emps,byEmp,eArr,clients,byDay,tasks:Array.from(tmap.values()).sort((a,b)=>b.act-a.act||b.alloc-a.alloc),co,tot,ts,al,alerts:null,T};
+ return _C;
+}
+const ALT={missing:['Missing actuals','r'],low:['Low chargeable hours','a'],below:['Actual below allocation','a'],above:['Actual above estimate','a'],highnc:['High non-chargeable','a'],over:['Over-allocation','r'],budget:['Client over budget','r']};
+function getAlerts(C){
+ if(C.alerts)return C.alerts;
+ const s=st(),cap=s.dailyCap||8,T=today(),fl=flat(),out=[],push=o=>out.push(o);
+ const mS=C.month+'-01',wds=wdList(mS,mEnd(C.month)),eset=new Set(C.emps.map(e=>e.id));
+ C.emps.forEach(e=>{if(!e.active)return;
+  wds.forEach(d=>{if(d<C.per.from||d>C.per.to)return;const k=e.id+'|'+d,a=fl.alDay.get(k)||0,x=fl.tsDay.get(k)||0,lv=fl.lv.get(k)||0;
+   if(d<T&&lv<cap&&x<=0)push({type:'missing',sev:a>0?'high':'med',emp:e.id,date:d,msg:a>0?'No actual hours logged against '+nf(a)+'h allocated':'No actual hours logged'});
+   else if(d<T&&x>0&&a-x>s.belowTol)push({type:'below',sev:'med',emp:e.id,date:d,msg:'Actual '+nf(x)+'h vs allocation '+nf(a)+'h ('+sgn(x-a)+'h)'});
+   if(a>cap+0.01)push({type:'over',sev:'high',emp:e.id,date:d,msg:nf(a)+'h allocated vs '+nf(cap)+'h daily capacity'})})});
+ const g=new Map();
+ fl.al.forEach(r=>{if(!eset.has(r.emp)||r.date<C.per.from||r.date>C.per.to||r.date>T||(F.client&&r.client!==F.client))return;const k=[r.emp,r.date,r.client,r.task].join(SEP);g.set(k,(g.get(k)||0)+r.est)});
+ g.forEach((est,k)=>{const x=fl.tsRow.get(k)||0;if(x>0&&x-est>s.aboveTol){const p=k.split(SEP);push({type:'above',sev:'med',emp:p[0],date:p[1],client:p[2],msg:cName(p[2])+' · '+p[3]+': '+nf(x)+'h actual vs '+nf(est)+'h estimate'})}});
+ if(C.wd.done>=3)C.emps.forEach(e=>{if(!e.active)return;const x=C.byEmp.get(e.id);
+  if(x.target>0&&x.pace>0&&x.doneChg<x.pace*s.lowPct)push({type:'low',sev:x.doneChg<x.pace*.5?'high':'med',emp:e.id,date:null,msg:'Chargeable '+nf(x.doneChg)+'h vs pace '+nf(x.pace)+'h (target '+nf(x.target)+'h)'});
+  if(x.doneAct>=16&&(x.doneAct-x.doneChg)/x.doneAct>s.ncPct)push({type:'highnc',sev:'med',emp:e.id,date:null,msg:'Non-chargeable is '+pc((x.doneAct-x.doneChg)/x.doneAct)+' of '+nf(x.doneAct)+'h logged'})});
+ if(ME.admin||ME.roles.has('Manager')||ME.roles.has('AM'))C.clients.forEach(c=>{if(c.internal||c.budget<=0)return;const over=c.mtdAct>c.budget;
+  if(over||(c.proj!=null&&c.proj>c.budget*1.05))push({type:'budget',sev:over?'high':'med',emp:null,client:c.c.code,date:null,msg:(over?'Used '+nf(c.mtdAct):'Projected '+nf(c.proj))+'h vs budget '+nf(c.budget)+'h'})});
+ out.sort((a,b)=>(a.sev==='high'?0:1)-(b.sev==='high'?0:1)||(b.date||'9').localeCompare(a.date||'9'));
+ C.alerts=out;return out;
+}
+function alertsByEmp(C){const m=new Map();getAlerts(C).forEach(a=>{if(!a.emp)return;const x=m.get(a.emp)||{n:0,high:0,t:{}};x.n++;if(a.sev==='high')x.high++;x.t[a.type]=(x.t[a.type]||0)+1;m.set(a.emp,x)});return m}
+
+/* ================= weekly digests ================= */
+function weekRange(kind){const T=today(),mon=addDays(T,-((dow(T)+6)%7));return kind==='current'?{from:mon,to:T}:{from:addDays(mon,-7),to:addDays(mon,-1)}}
+function empWeek(e,rg){
+ const fl=flat(),T=today(),cap=st().dailyCap||8;let alloc=0,act=0,chg=0;const miss=[];
+ fl.al.forEach(r=>{if(r.emp===e.id&&r.date>=rg.from&&r.date<=rg.to)alloc+=r.hours});
+ fl.ts.forEach(r=>{if(r.emp===e.id&&r.date>=rg.from&&r.date<=rg.to){act+=r.hours;if(r.bill==='B')chg+=r.hours}});
+ wdList(rg.from,rg.to).forEach(d=>{if(d<T&&(fl.tsDay.get(e.id+'|'+d)||0)<=0&&(fl.lv.get(e.id+'|'+d)||0)<cap)miss.push(d)});
+ const m=monthOf(rg.to),mS=m+'-01';let mtd=0;fl.ts.forEach(r=>{if(r.emp===e.id&&r.date>=mS&&r.date<=rg.to&&r.bill==='B')mtd+=r.hours});
+ const tg=targetOf(e.id,m);
+ return{e,alloc,act,chg,nc:act-chg,miss,mtd,target:tg,ach:tg>0?mtd/tg:null,var:act-alloc};
+}
+const mailCss='font-family:Arial,sans-serif;font-size:13px;color:#1a1a1a';
+const tdS='padding:5px 9px;border-bottom:1px solid #e3e8e5;text-align:right',thS='padding:6px 9px;background:#e8f3ed;color:#0e5744;text-align:right;font-weight:600';
+function miniTbl(head,rows){return'<table style="border-collapse:collapse;width:100%;font-size:12.5px"><tr>'+head.map((h,i)=>'<th style="'+thS+(i===0?';text-align:left':'')+'">'+esc(h)+'</th>').join('')+'</tr>'+rows.map(r=>'<tr>'+r.map((c,i)=>'<td style="'+tdS+(i===0?';text-align:left':'')+'">'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table>'}
+function buildWeekly(kind){
+ const wk=st().weekly,rg=weekRange(kind||wk.range),out=[],E=S.cfg.employees.filter(e=>e.active);
+ const label=fD(rg.from)+' – '+fD(rg.to),subj='Weekly timesheet summary · '+label;
+ const wrap=(name,intro,body)=>({html:'<div style="'+mailCss+'"><p>Hi '+esc(name)+',</p><p>'+intro+'</p>'+body+'<p style="color:#6b7a73;font-size:12px">Sent by the '+esc(st().company)+' Team Allocation &amp; Timesheet Portal. Hours are actuals; chargeable = billable.</p></div>'});
+ const teamRows=list=>list.map(x=>[x.e.name,nf(x.alloc),nf(x.act),nf(x.chg),sgn(x.var),pc(x.ach),x.miss.length?x.miss.map(d=>fD(d)).join(', '):'–']);
+ const th=['Employee','Alloc h','Actual h','Chargeable h','Variance','Month target %','Missing days'];
+ const txt=(name,rows)=>'Hi '+name+',\n\n'+subj+'\n\n'+rows.map(r=>r.join(' | ')).join('\n')+'\n';
+ if(wk.employees)E.forEach(e=>{if(!e.email)return;const x=empWeek(e,rg);
+  const body=miniTbl(['Allocated','Actual','Chargeable','Non-chargeable','Variance'],[[nf(x.alloc),nf(x.act),nf(x.chg),nf(x.nc),sgn(x.var)]])+'<p>Month to date you have <b>'+nf(x.mtd)+'h</b> chargeable against a target of '+nf(x.target)+'h ('+pc(x.ach)+').</p>'+(x.miss.length?'<p style="color:#b3261e"><b>Actuals missing on:</b> '+x.miss.map(d=>esc(fD(d))).join(', ')+'. Please ask your admin to correct these.</p>':'<p style="color:#0e5744">All working days have hours logged.</p>');
+  out.push(Object.assign({aud:'Employee',to:e.email,cc:e.other||'',name:e.name,subject:subj},wrap(e.name,'Here is your summary for <b>'+esc(label)+'</b>.',body),{text:txt(e.name,[['Alloc',nf(x.alloc)],['Actual',nf(x.act)],['Chargeable',nf(x.chg)],['Missing days',x.miss.length]])}))});
+ const grp=(field,nameF,aud,on)=>{if(!on)return;const m=new Map();E.forEach(e=>{const k=lc(e[field]);if(!k)return;if(!m.has(k))m.set(k,{email:e[field],name:e[nameF]||e[field],list:[]});m.get(k).list.push(e)});
+  m.forEach(g=>{const rows=g.list.map(e=>empWeek(e,rg));const missN=sum(rows,x=>x.miss.length);
+   const body=miniTbl(th,teamRows(rows))+'<p><b>'+missN+'</b> missing employee-days this period.</p>';
+   out.push(Object.assign({aud,to:g.email,cc:'',name:g.name,subject:subj+' · '+aud+' view'},wrap(g.name,'Team summary for <b>'+esc(label)+'</b> ('+rows.length+' people).',body),{text:txt(g.name,teamRows(rows))}))})};
+ grp('mgrEmail','mgrName','Manager',wk.managers);grp('amEmail','amName','AM',wk.ams);grp('hrEmail','hrName','HR',wk.hr);
+ if(wk.extra)S.cfg.recips.filter(r=>r.active&&r.type!=='Monthly'&&r.email).forEach(r=>{const rows=E.map(e=>empWeek(e,rg));
+  out.push(Object.assign({aud:'Management',to:r.email,cc:'',name:r.name,subject:subj+' · company view'},wrap(r.name,'Company-wide summary for <b>'+esc(label)+'</b>.',miniTbl(th,teamRows(rows))),{text:txt(r.name,teamRows(rows))}))});
+ return{range:rg,label,msgs:out};
+}
+function nextRun(){const w=st().weekly;const T=new Date();const p=(w.time||'09:00').split(':');for(let i=0;i<8;i++){const d=new Date(T.getFullYear(),T.getMonth(),T.getDate()+i,+p[0],+p[1]);if(d.getDay()===+w.day&&d>T)return d}return null}
+
+/* ================= UI primitives ================= */
+const sched=(()=>{let t=null;return()=>{if(t)return;t=setTimeout(()=>{t=null;render()},60)}})();
+function toast(m,err){const d=document.createElement('div');if(err)d.className='e';d.textContent=m;const h=$('#toast');if(!h)return;h.appendChild(d);setTimeout(()=>d.remove(),err?6500:2800)}
+const kpi=(l,v,s,t,u)=>'<div class="kpi '+(t||'')+'"><div class="l">'+l+'</div><div class="v">'+v+(u?'<small>'+u+'</small>':'')+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';
+const badge=(t,c)=>'<span class="b '+(c||'')+'">'+esc(t)+'</span>';
+const tone=(v,hi,mid)=>v==null?'':v>=(hi==null?1:hi)?'g':v>=(mid==null?.75:mid)?'a':'r';
+const pcb=(v,hi,mid)=>v==null?'<span class="mut">–</span>':badge(pc(v),tone(v,hi,mid));
+const pbar=(v,c)=>'<div class="pb '+(c||'')+'"><i style="width:'+Math.max(0,Math.min(100,(v||0)*100))+'%"></i></div>';
+const vcl=v=>v>0.004?'pos':v<-0.004?'neg':'mut';
+const perLabel=C=>F.date?fDL(F.date):fM(C.month);
+function ph(t,sub,act){return'<div class="ph"><div><h2>'+t+'</h2>'+(sub?'<p>'+sub+'</p>':'')+'</div><div class="sp"></div>'+(act||'')+'</div>'}
+function tbl(cols,rows,o){o=o||{};
+ if(!rows.length)return'<div class="empty">'+(o.empty||'Nothing to show for the current filters.')+'</div>';
+ return'<div class="tw"'+(o.max?' style="max-height:'+o.max+'px;overflow:auto"':'')+'><table><thead><tr>'+cols.map(c=>'<th class="'+(c.n?'n':'')+'"'+(c.t?' title="'+esc(c.t)+'"':'')+'>'+c.h+'</th>').join('')+'</tr></thead><tbody>'+
+ rows.map((r,i)=>'<tr'+(o.rc&&o.rc(r)?' class="'+o.rc(r)+'"':'')+'>'+cols.map(c=>'<td class="'+(c.n?'n ':'')+(c.c?c.c(r):'')+'">'+c.g(r,i)+'</td>').join('')+'</tr>').join('')+'</tbody>'+
+ (o.foot?'<tfoot><tr>'+cols.map(c=>'<td class="'+(c.n?'n':'')+'">'+(c.f?c.f(rows):'')+'</td>').join('')+'</tr></tfoot>':'')+'</table></div>';
+}
+function niceMax(v){const p=Math.pow(10,Math.floor(Math.log10(v))),f=v/p;return(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p}
+function chart(o){
+ const W=o.w||720,H=o.h||230,pl=40,pr=8,pt=10,pb=24,iw=W-pl-pr,ih=H-pt-pb,n=o.labels.length,bars=o.bars||[],lines=o.lines||[];
+ let mx=0;if(o.stack){for(let i=0;i<n;i++)mx=Math.max(mx,sum(bars,b=>b.vals[i]))}else bars.forEach(b=>b.vals.forEach(v=>{mx=Math.max(mx,v||0)}));
+ lines.forEach(l=>l.vals.forEach(v=>{if(v!=null)mx=Math.max(mx,v)}));mx=niceMax(mx||1);
+ const band=iw/Math.max(n,1),y=v=>pt+ih-(v/mx)*ih,x=i=>pl+band*i+band/2;
+ let s='<div class="leg">'+bars.concat(lines).map(b=>'<span><i style="background:'+b.color+(b.dash?';opacity:.6':'')+'"></i>'+esc(b.name)+'</span>').join('')+'</div>';
+ s+='<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(o.title||'Chart')+'">';
+ for(let i=0;i<=4;i++){const v=mx*i/4,yy=y(v);s+='<line class="gl" x1="'+pl+'" x2="'+(W-pr)+'" y1="'+yy+'" y2="'+yy+'"/><text x="'+(pl-5)+'" y="'+(yy+3)+'" text-anchor="end">'+nf(v,mx<10?1:0)+'</text>'}
+ const every=Math.ceil(n/(o.maxLabels||16));o.labels.forEach((l,i)=>{if(i%every===0)s+='<text x="'+x(i)+'" y="'+(H-8)+'" text-anchor="middle">'+esc(l)+'</text>'});
+ const bw=o.stack?band*.66:band*.78/Math.max(bars.length,1);
+ for(let i=0;i<n;i++){let base=0;bars.forEach((b,bi)=>{const v=b.vals[i]||0;if(v<=0)return;const h=(v/mx)*ih;let xx,yy;
+  if(o.stack){xx=x(i)-bw/2;yy=y(base+v);base+=v}else{xx=x(i)-(bw*bars.length)/2+bi*bw;yy=y(v)}
+  s+='<rect x="'+xx.toFixed(1)+'" y="'+yy.toFixed(1)+'" width="'+Math.max(bw-1,1).toFixed(1)+'" height="'+h.toFixed(1)+'" style="fill:'+b.color+(b.op?';opacity:'+b.op:'')+'"><title>'+esc(o.labels[i])+' · '+esc(b.name)+': '+nf(v)+'</title></rect>'})}
+ lines.forEach(l=>{let d='',pen=false;l.vals.forEach((v,i)=>{if(v==null){pen=false;return}d+=(pen?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1);pen=true});
+  s+='<path d="'+d+'" fill="none" style="stroke:'+l.color+';stroke-width:2'+(l.dash?';stroke-dasharray:5 4':'')+'"/>'});
+ return s+'</svg>';
+}
+function runway(co){
+ const b=co.budget||0,a=co.ach,p=co.proj,m=Math.max(b,a,p||0)*1.06||1,w=v=>Math.min(100,v/m*100);
+ return'<div class="runway"><div class="ach" style="width:'+w(a)+'%"></div>'+(p!=null&&p>a?'<div class="prj" style="left:'+w(a)+'%;width:'+(w(p)-w(a))+'%"></div>':'')+
+ '<div class="mk" style="left:'+w(b)+'%"><span>Budget '+n0(b)+'h</span></div><div class="pt" style="left:'+w(a)+'%"><span>Achieved '+n0(a)+'h</span></div></div>';
+}
+function groupTeams(C,keyF){
+ const m=new Map();C.eArr.forEach(x=>{const k=keyF(x.e)||'(unassigned)';if(!m.has(k))m.set(k,{name:k,list:[]});m.get(k).list.push(x)});
+ return Array.from(m.values()).map(g=>{const L=g.list;g.n=L.length;['target','alloc','est','act','chg','nc','cap','mtdChg','remaining'].forEach(f=>{g[f]=sum(L,x=>x[f])});
+  g.util=g.cap>0?g.chg/g.cap:null;g.ach=g.target>0?g.mtdChg/g.target:null;g.var=g.act-g.alloc;return g}).sort((a,b)=>a.name.localeCompare(b.name));
+}
+const SHORT={missing:'missing',low:'low chargeable',below:'below allocation',above:'over estimate',highnc:'high non-chg',over:'over-allocated'};
+function attn(ab,id){const a=ab.get(id);if(!a)return'<span class="mut">–</span>';return'<div class="chips">'+Object.keys(a.t).map(k=>badge(a.t[k]+' '+SHORT[k],ALT[k][1])).join('')+'</div>'}
+function dayBoard(date,emps){
+ const fl=flat(),cap=st().dailyCap||8,set=new Set(emps.map(e=>e.id)),rows=new Map(),cl=new Map();
+ emps.forEach(e=>rows.set(e.id,{e,chgA:0,ncA:0,leave:fl.lv.get(e.id+'|'+date)||0,alloc:0,avail:0,loc:'',act:0}));
+ fl.al.forEach(r=>{if(r.date!==date||!set.has(r.emp))return;const x=rows.get(r.emp);if(r.type==='C')x.chgA+=r.hours;else x.ncA+=r.hours;x.alloc+=r.hours;
+  let c=cl.get(r.client);if(!c){c={code:r.client,chg:0,nc:0};cl.set(r.client,c)}if(r.type==='C')c.chg+=r.hours;else c.nc+=r.hours});
+ fl.ts.forEach(r=>{if(r.date!==date||!set.has(r.emp))return;const x=rows.get(r.emp);x.act+=r.hours;if(!x.loc)x.loc=r.loc||''});
+ rows.forEach(x=>{x.avail=Math.max(0,cap-x.leave-x.alloc)});
+ return{rows:Array.from(rows.values()),clients:Array.from(cl.values()).sort((a,b)=>codeSort(a.code,b.code))};
+}
+function boardTables(B,withAct){
+ const R=B.rows;
+ const emp=tbl([{h:'Employee',g:x=>esc(x.e.name)},{h:'Initial',g:x=>esc(x.e.ini)},{h:'Chargeable',n:1,g:x=>hz(x.chgA),f:r=>hz(sum(r,x=>x.chgA))},{h:'Non-chargeable',n:1,g:x=>hz(x.ncA),f:r=>hz(sum(r,x=>x.ncA))},{h:'Leave',n:1,g:x=>hz(x.leave),f:r=>hz(sum(r,x=>x.leave))},{h:'Allocation',n:1,g:x=>hz(x.alloc),f:r=>hz(sum(r,x=>x.alloc))},
+  {h:'Availability',n:1,c:x=>x.avail>0?'avail':'',g:x=>hz(x.avail),f:r=>hz(sum(r,x=>x.avail))}].concat(withAct?[{h:'Actual',n:1,g:x=>hz(x.act),f:r=>hz(sum(r,x=>x.act))},{h:'WFH / Office',g:x=>esc(x.loc||'–')}]:[]),R,{foot:1,empty:'No employees in scope.'});
+ const cl=tbl([{h:'Client',g:c=>esc(cName(c.code))},{h:'Chargeable',n:1,g:c=>hz(c.chg),f:r=>hz(sum(r,c=>c.chg))},{h:'Non-chargeable',n:1,g:c=>hz(c.nc),f:r=>hz(sum(r,c=>c.nc))},{h:'Total',n:1,g:c=>hz(c.chg+c.nc),f:r=>hz(sum(r,c=>c.chg+c.nc))}],B.clients,{foot:1,empty:'Nothing allocated for this day.'});
+ return{emp,cl};
+}
+
+/* ================= shell ================= */
+const PAGES=[
+ {id:'company',l:'Company / QC',g:'Dashboards',r:['Manager','AM']},
+ {id:'manager',l:'Manager dashboard',g:'Dashboards',r:['Manager','AM','HR']},
+ {id:'team',l:'Team dashboard',g:'Dashboards',r:['Manager','AM','HR']},
+ {id:'client',l:'Client dashboard',g:'Dashboards',r:['Manager','AM']},
+ {id:'individual',l:'Individual dashboard',g:'Dashboards',r:['Employee']},
+ {id:'allocation',l:'Daily allocation',g:'Work',r:['Employee']},
+ {id:'timesheet',l:'Timesheet',g:'Work',r:['Employee']},
+ {id:'alerts',l:'Exception alerts',g:'Work',r:['Employee']},
+ {id:'reports',l:'Reports',g:'Reports',r:['Employee']},
+ {id:'monthly',l:'Monthly management report',g:'Reports',r:['Manager','AM']},
+ {id:'weekly',l:'Weekly email reports',g:'Reports',r:[]},
+ {id:'masters',l:'Masters',g:'Admin',r:['HR']},
+ {id:'audit',l:'Audit log',g:'Admin',r:['HR']},
+ {id:'settings',l:'Settings',g:'Admin',r:[]}];
+const canSee=p=>ME.admin||p.r.some(r=>ME.roles.has(r));
+const NOFILT=['allocation','timesheet','weekly','masters','audit','settings'];
+function defaultPage(pages){const has=id=>pages.some(p=>p.id===id);
+ if(ME.admin)return'company';if(ME.roles.has('Manager')||ME.roles.has('AM'))return'manager';if(ME.roles.has('HR'))return'team';return has('timesheet')?'timesheet':pages[0].id}
+function filtersBar(){
+ const E=scopeEmps().slice().sort((a,b)=>a.name.localeCompare(b.name));
+ const uniq=k=>Array.from(new Set(E.map(e=>e[k]).filter(Boolean))).sort();
+ const opt=(arr,v,all)=>'<option value="">'+all+'</option>'+arr.map(x=>{const a=Array.isArray(x);const val=a?x[0]:x,lab=a?x[1]:x;return'<option value="'+esc(val)+'"'+(val===v?' selected':'')+'>'+esc(lab)+'</option>'}).join('');
+ const sel=(k,l,arr,all)=>'<label class="f">'+l+'<select data-f="'+k+'">'+opt(arr,F[k],all)+'</select></label>';
+ return'<div class="filters"><label class="f">Month<input type="month" data-f="month" value="'+F.month+'"></label><label class="f">Date<input type="date" data-f="date" value="'+F.date+'" min="'+F.month+'-01" max="'+mEnd(F.month)+'"></label>'+
+ (ME.pure?'':sel('emp','Employee',E.map(e=>[e.id,e.name]),'All employees')+sel('mgr','Manager',uniq('mgrName'),'All managers')+sel('am','AM',uniq('amName'),'All AMs')+sel('hr','HR',uniq('hrName'),'All HR'))+
+ sel('client','Client',S.cfg.clients.filter(c=>c.active||F.client===c.code).sort((a,b)=>codeSort(a.code,b.code)).map(c=>[c.code,cName(c.code)]),'All clients')+
+ sel('cat','Category',CATS.map(c=>[c,CATN[c]]),'All categories')+'<button class="btn" data-a="resetf">Reset</button></div>';
+}
+function people(){
+ const m=new Map();const add=(email,name,src)=>{const k=lc(email);if(!k)return;if(!m.has(k))m.set(k,{email:k,name:name||email})};
+ S.cfg.employees.forEach(e=>add(e.email,e.name));S.cfg.employees.forEach(e=>{add(e.mgrEmail,e.mgrName);add(e.amEmail,e.amName);add(e.hrEmail,e.hrName)});
+ return Array.from(m.values()).map(p=>{const w=mkWho(false,p.email,S.cfg.employees.find(e=>lc(e.email)===p.email)||null);p.roles=Array.from(w.roles).filter(r=>r!=='Employee').join('/')||'Employee';return p}).sort((a,b)=>a.name.localeCompare(b.name));
+}
+function shell(C,body){
+ const pages=PAGES.filter(canSee);let h='',g='';
+ pages.forEach(p=>{if(p.g!==g){g=p.g;h+='<h6>'+g+'</h6>'}
+  const cnt=p.id==='alerts'?getAlerts(C).filter(a=>a.sev==='high').length:0;
+  h+='<a data-a="nav" data-p="'+p.id+'" class="'+(p.id===PAGE?'on':'')+'" role="link" tabindex="0">'+p.l+(cnt?'<span class="ct">'+cnt+'</span>':'')+'</a>'});
+ const cur=PAGES.find(p=>p.id===PAGE)||{l:''};
+ const vaSel=ID.admin?'<label class="f" style="flex-direction:row;align-items:center;gap:6px">View as<select data-c="viewas" style="max-width:190px;height:30px"><option value="">Admin (you)</option>'+people().map(p=>'<option value="'+esc(p.email)+'"'+(VA&&VA.email===p.email?' selected':'')+'>'+esc(p.name)+' · '+esc(p.roles)+'</option>').join('')+'</select></label>':'';
+ const role=ME.admin?'Admin':Array.from(ME.roles).filter(r=>r!=='Employee').concat(ME.emp?['Employee']:[]).join(' · ');
+ return'<div class="app"><nav class="nav'+(NAVOPEN?' open':'')+'"><div class="brand"><i>TP</i><div>Team Allocation<small>'+esc(st().company)+'</small></div></div>'+h+'</nav>'+
+ '<div class="main"><div class="top"><button class="btn hb" data-a="burger" aria-label="Menu">☰</button><h1>'+cur.l+'</h1><div class="sp"></div>'+vaSel+
+ '<div class="who">'+esc((ME.emp&&ME.emp.name)||ID.name||(ME.admin?'Administrator':ID.email||'Guest'))+'<br><span class="mut">'+esc(role)+(Store.mode==='local'?' · local demo':'')+'</span></div>'+(Store.mode==='firebase'?'<button class="btn s" data-a="switchacc" title="Sign in as someone else">Switch account</button>':'')+'<button class="btn s" data-a="theme" title="Toggle light / dark">◐</button></div>'+
+ (VA?'<div class="note a" style="margin:0;border-radius:0">Previewing the portal as '+esc((people().find(p=>p.email===VA.email)||{}).name||VA.email)+'. Your own admin rights are paused until you switch back.</div>':'')+
+ (NOFILT.indexOf(PAGE)<0?filtersBar():'')+'<div class="page">'+body+'</div></div></div>';
+}
+
+/* ================= dashboards ================= */
+function noteMetrics(){return'<details class="tag" style="margin-top:6px"><summary>How these numbers are calculated</summary><div class="note" style="margin-top:6px">Actual = timesheet hours. Chargeable = billable actual hours; non-chargeable = the rest. Utilization = chargeable ÷ capacity (working days elapsed × '+nf(st().dailyCap)+'h, less leave). Target achievement = month-to-date chargeable ÷ monthly target; remaining = target − chargeable. Variance = actual − allocation. Run rate = client hours on completed working days ÷ days completed; projection = completed hours + run rate × working days left. Achieved (QC) counts client work only; Internal is excluded.</div></details>'}
+function dCompany(C){
+ const co=C.co,st_=co.proj==null?'':co.projPct>1.05?'r':co.projPct>=.9?'g':'a';
+ const days=Array.from(C.byDay.values());
+ const doneAll=sum(days.filter(d=>d.date<C.wd.cutoff),d=>d.act),projAll=C.wd.done>0?(C.wd.left===0?sum(days,d=>d.act):doneAll+doneAll/C.wd.done*C.wd.left):null;
+ const lab=days.map(d=>d.date.slice(8));
+ const cum=[];let run=0;days.forEach(d=>{run+=d.act-(d.INT||0)*0;cum.push(run)});
+ let cumC=0;const cumA=days.map(d=>{if(d.date>=C.wd.cutoff&&C.month===monthOf(today())&&!F.date)return null;cumC+=sum(C.clients.filter(c=>!c.internal),()=>0);return null});
+ const clientDay=new Map();C.ts.forEach(r=>{const c=clientBy(r.client);if(c&&c.internal)return;clientDay.set(r.date,(clientDay.get(r.date)||0)+r.hours)});
+ let cc=0;const cumAct=days.map(d=>{cc+=clientDay.get(d.date)||0;return d.date<C.wd.cutoff||d.date<=today()?cc:null});
+ const wdN=wdList(C.month+'-01',mEnd(C.month));let wi=0;const pace=days.map(d=>{if(isWD(d.date))wi++;return co.budget?co.budget*wi/(wdN.length||1):null});
+ const projL=days.map((d,i)=>{if(co.proj==null||C.wd.left===0)return null;const last=cumAct.reduce((a,v,j)=>v!=null?j:a,-1);if(i<last)return null;if(i===last)return cumAct[i];return cumAct[last]+(co.rate||0)*wdList(days[last].date,d.date).filter(x=>x>days[last].date).length});
+ const H=S.cfg.history.byMonth||{},ms=[];for(let i=8;i>=0;i--)ms.push(addMonths(C.month,-i));
+ const anyF=F.client||F.emp||F.mgr||F.am||F.hr;
+ const trendV=ms.map(m=>m===C.month?co.ach:sum(Object.keys(H[m]||{}),k=>H[m][k])),trendB=ms.map(m=>{const q=(S.cfg.budgets.qc||{})[m],b=(S.cfg.budgets.byMonth||{})[m];return q!=null&&q!==''?+q:b?sum(Object.keys(b),k=>{const c=clientBy(k);return c&&!c.internal?b[k]:0}):null});
+ const teams=groupTeams(C,e=>e.mgrName);
+ const top=C.clients.filter(c=>!c.internal&&(c.budget>0||c.mtdAct>0)).sort((a,b)=>(b.used||0)-(a.used||0)).slice(0,10);
+ const dayRows=days.filter(d=>d.act>0||d.alloc>0||isWD(d.date));
+ return ph('Company / QC dashboard',perLabel(C)+' · '+C.wd.done+' of '+C.wd.total+' working days completed'+(C.month===monthOf(today())?' · as of '+fD(today()):''))+
+ '<div class="card"><div class="hero"><strong>Monthly QC budget runway</strong><span class="mut">'+n0(co.ach)+' of '+n0(co.budget)+' hours achieved ('+pc(co.achPct)+')</span>'+(co.proj!=null?badge(co.projPct>1.05?'Projected over budget':co.projPct>=.9?'On track':'Behind budget pace',st_):'')+'</div>'+runway(co)+
+ '<div class="mut" style="font-size:13px">'+(co.proj!=null?'At the current run rate of <b>'+nf(co.rate)+' h/day</b>, the month closes at <b>'+n0(co.proj)+' h</b> — '+pc(co.projPct)+' of budget ('+sgn(co.proj-co.budget)+' h).':'Not enough completed working days to project the month.')+'</div></div>'+
+ '<div class="kpis">'+kpi('Monthly QC budget',n0(co.budget),anyF?'For clients in view':(S.cfg.budgets.qc||{})[C.month]!=null&&(S.cfg.budgets.qc||{})[C.month]!==''?'Company override':'Sum of client budgets','',' h')+kpi('Achieved hours',nf(co.ach),'Client work to '+fD(C.mtdTo>today()&&!F.date?today():C.mtdTo),'g','h')+kpi('Pending hours',nf(co.pending),'Budget − achieved','','h')+
+ kpi('Achievement',pc(co.achPct),'of monthly budget',tone(co.achPct,.9,.6),'')+kpi('Chargeable hours',nf(co.chg),'Month to date','','h')+kpi('Utilization',pc(co.util),'Chargeable ÷ capacity',tone(co.util,.75,.55),'')+
+ kpi('Daily run rate',nf(co.rate),'Per completed working day','','h/day')+kpi('Projected month-end',co.proj==null?'–':n0(co.proj),co.proj==null?'':pc(co.projPct)+' of budget',st_,'h')+'</div>'+
+ '<div class="g2"><div class="card"><h3>Daily hours by category</h3><div class="sub">FA, CS and Internal actuals per day</div>'+chart({labels:lab,stack:1,title:'Daily hours by category',bars:[{name:'FA',color:'var(--fa)',vals:days.map(d=>d.FA)},{name:'CS',color:'var(--cs)',vals:days.map(d=>d.CS)},{name:'Internal',color:'var(--int)',vals:days.map(d=>d.INT)}]})+'</div>'+
+ '<div class="card"><h3>Cumulative hours vs budget pace</h3><div class="sub">Client hours; dashed line projects the rest of the month at the run rate</div>'+chart({labels:lab,title:'Cumulative hours',lines:[{name:'Achieved',color:'var(--brand)',vals:cumAct},{name:'Projected',color:'var(--brand)',dash:1,vals:projL},{name:'Budget pace',color:'var(--ink3)',vals:pace}]})+'</div></div><div class="gap"></div>'+
+ '<div class="g2"><div class="card"><h3>Hours by category</h3><div class="sub">'+esc(perLabel(C))+' · all actual hours including Internal</div>'+
+ tbl([{h:'Date',g:d=>fD(d.date)},{h:'FA',n:1,g:d=>hz(d.FA),f:r=>hz(sum(r,d=>d.FA))},{h:'CS',n:1,g:d=>hz(d.CS),f:r=>hz(sum(r,d=>d.CS))},{h:'Internal',n:1,g:d=>hz(d.INT),f:r=>hz(sum(r,d=>d.INT))},{h:'Total',n:1,g:d=>hz(d.act),f:r=>hz(sum(r,d=>d.act))},{h:'Chargeable',n:1,g:d=>hz(d.chg),f:r=>hz(sum(r,d=>d.chg))}],dayRows,{foot:1,max:380,empty:'No hours in this period.'})+
+ '<div class="mut" style="margin-top:6px;font-size:12.5px">Projected month-end (all hours): <b>'+(projAll==null?'–':nf(projAll))+'</b></div></div>'+
+ '<div class="card"><h3>Client budget usage</h3><div class="sub">Top clients by share of monthly budget used</div>'+tbl([{h:'Client',g:c=>esc(cName(c.c.code))},{h:'Budget',n:1,g:c=>hz(c.budget)},{h:'Actual',n:1,g:c=>hz(c.mtdAct)},{h:'Used',g:c=>c.used==null?'<span class="mut">no budget</span>':'<div class="bar-h">'+pbar(c.used,c.used>1?'r':c.used>.85?'a':'')+'<span>'+pc(c.used)+'</span></div>'},{h:'Projected',n:1,g:c=>c.proj==null?'–':nf(c.proj)}],top,{empty:'No client activity yet.'})+'</div></div>'+
+ '<div class="g2" style="margin-top:14px"><div class="card"><h3>Team performance by manager</h3><div class="sub">Chargeable hours against monthly targets</div>'+
+ tbl([{h:'Manager',g:g=>esc(g.name)},{h:'People',n:1,g:g=>g.n},{h:'Target',n:1,g:g=>nf(g.target,0)},{h:'Chargeable',n:1,g:g=>nf(g.mtdChg)},{h:'Achieved',n:1,g:g=>pcb(g.ach,1,.7)},{h:'Utilization',n:1,g:g=>pcb(g.util,.75,.55)}],teams,{})+'</div>'+
+ (anyF?'':'<div class="card"><h3>Monthly trend</h3><div class="sub">Client hours vs budget, last nine months (earlier months from imported history)</div>'+chart({labels:ms.map(fMs),title:'Monthly trend',bars:[{name:'Hours',color:'var(--brand)',vals:trendV}],lines:[{name:'Budget',color:'var(--int)',vals:trendB}]})+'</div>')+'</div>'+noteMetrics();
+}
+function dManager(C){
+ const ab=alertsByEmp(C),t=C.tot,teams=groupTeams(C,e=>e.mgrName),att=C.eArr.filter(x=>(ab.get(x.e.id)||{high:0}).high>0).length;
+ const cell=x=>'<td class="n">'+hz(x.alloc)+'</td><td class="n">'+hz(x.est)+'</td><td class="n">'+hz(x.act)+'</td><td class="n">'+hz(x.chg)+'</td><td class="n">'+hz(x.nc)+'</td><td class="n">'+pcb(x.util,.75,.55)+'</td><td class="n '+vcl(x.var)+'">'+sgn(x.var)+'</td><td class="n">'+hz(x.remaining)+'</td>';
+ let body='';
+ teams.forEach(g=>{body+='<tr class="grp"><td>Manager: '+esc(g.name)+' · '+g.n+'</td><td class="n">'+nf(g.target,0)+'</td>'+cell(g)+'<td></td></tr>';
+  g.list.forEach(x=>{const a=ab.get(x.e.id);body+='<tr'+(a&&a.high?' class="hl"':'')+'><td>'+esc(x.e.name)+' <span class="mut">'+esc(x.e.ini)+'</span></td><td class="n">'+nf(x.target,0)+'</td>'+cell(x)+'<td>'+attn(ab,x.e.id)+'</td></tr>'})});
+ return ph('Manager dashboard',perLabel(C)+' · target, allocation, actuals and exceptions per person')+
+ '<div class="kpis">'+kpi('Target',nf(t.target,0),'Monthly chargeable','',' h')+kpi('Allocation',nf(t.alloc),'Period','','h')+kpi('Estimate',nf(t.est),'Period','','h')+kpi('Actual',nf(t.act),'Period','g','h')+kpi('Chargeable',nf(t.chg),pc(t.act?t.chg/t.act:null)+' of actual','','h')+kpi('Non-chargeable',nf(t.nc),'','','h')+
+ kpi('Utilization',pc(t.util),'',tone(t.util,.75,.55))+kpi('Variance',sgn(t.var),'Actual − allocation',t.var<-8?'a':'','h')+kpi('Remaining',nf(t.remaining),'To reach targets','','h')+kpi('Attention required',att,'people with high-severity alerts',att?'r':'g')+'</div>'+
+ (C.eArr.length?'<div class="tw"><table><thead><tr><th>Employee</th><th class="n">Target</th><th class="n">Allocation</th><th class="n">Estimate</th><th class="n">Actual</th><th class="n">Chargeable</th><th class="n">Non-chargeable</th><th class="n">Utilization</th><th class="n">Variance</th><th class="n">Remaining</th><th>Attention required</th></tr></thead><tbody>'+body+'</tbody><tfoot><tr><td>Total</td><td class="n">'+nf(t.target,0)+'</td><td class="n">'+nf(t.alloc)+'</td><td class="n">'+nf(t.est)+'</td><td class="n">'+nf(t.act)+'</td><td class="n">'+nf(t.chg)+'</td><td class="n">'+nf(t.nc)+'</td><td class="n">'+pc(t.util)+'</td><td class="n">'+sgn(t.var)+'</td><td class="n">'+nf(t.remaining)+'</td><td></td></tr></tfoot></table></div>':'<div class="empty">No employees match the current filters.</div>')+
+ '<div class="tag" style="margin-top:8px">Rows shaded amber have at least one high-severity exception. Remaining = monthly target − chargeable hours to date.</div>'+noteMetrics();
+}
+function dTeam(C){
+ const cur=monthOf(today()),avDate=F.date||(C.month===cur?today():mEnd(C.month)),B=dayBoard(avDate,C.emps.filter(e=>e.active)),tabs=boardTables(B,avDate<=today());
+ const eA=C.eArr;
+ return ph('Team dashboard',perLabel(C)+' · team performance, availability and client mix')+
+ '<div class="kpis">'+kpi('People',eA.length,'in view')+kpi('Chargeable',nf(C.tot.chg),'Period','g','h')+kpi('Non-chargeable',nf(C.tot.nc),'Period','','h')+kpi('Utilization',pc(C.tot.util),'',tone(C.tot.util,.75,.55))+kpi('Target achieved',pc(C.tot.ach),nf(C.tot.mtdChg,0)+' of '+nf(C.tot.target,0)+' h',tone(C.tot.ach,1,.6))+kpi('Free capacity '+fD(avDate),nf(sum(B.rows,x=>x.avail)),'Unallocated hours','g','h')+'</div>'+
+ '<div class="card"><h3>Chargeable hours vs monthly target</h3><div class="sub">Each bar is a person; the line is their target</div>'+chart({labels:eA.map(x=>x.e.ini),stack:1,title:'Team chargeable hours',bars:[{name:'Chargeable',color:'var(--fa)',vals:eA.map(x=>x.mtdChg)},{name:'Non-chargeable',color:'var(--int)',vals:eA.map(x=>x.mtdAct-x.mtdChg)}],lines:[{name:'Target',color:'var(--red)',vals:eA.map(x=>x.target)}],maxLabels:40})+'</div>'+
+ '<div class="sec"><h3>Employee performance</h3></div>'+
+ tbl([{h:'Employee',g:x=>esc(x.e.name)+' <span class="mut">'+esc(x.e.ini)+'</span>'},{h:'Target',n:1,g:x=>nf(x.target,0),f:r=>nf(sum(r,x=>x.target),0)},{h:'Allocation',n:1,g:x=>hz(x.alloc),f:r=>hz(sum(r,x=>x.alloc))},{h:'Actual',n:1,g:x=>hz(x.act),f:r=>hz(sum(r,x=>x.act))},{h:'Chargeable',n:1,g:x=>hz(x.chg),f:r=>hz(sum(r,x=>x.chg))},{h:'Non-chg',n:1,g:x=>hz(x.nc),f:r=>hz(sum(r,x=>x.nc))},{h:'Utilization',n:1,g:x=>pcb(x.util,.75,.55)},{h:'Variance',n:1,c:x=>vcl(x.var),g:x=>sgn(x.var),f:r=>sgn(sum(r,x=>x.var))},{h:'Target %',n:1,t:'Month-to-date chargeable ÷ target',g:x=>pcb(x.ach,1,.6)},{h:'Remaining',n:1,g:x=>hz(x.remaining),f:r=>hz(sum(r,x=>x.remaining))}],eA,{foot:1})+
+ '<div class="sec"><h3>Availability and client mix · '+fD(avDate)+'</h3><span class="tag">Allocation for that day; green cells are hours still free</span></div><div class="g2"><div>'+tabs.emp+'</div><div>'+tabs.cl+'</div></div>'+noteMetrics();
+}
+function trendFor(C,code,cur){
+ const H=S.cfg.history.byMonth||{},ms=[];for(let i=8;i>=0;i--)ms.push(addMonths(C.month,-i));
+ return{labels:ms.map(fMs),vals:ms.map(m=>m===C.month?cur:(H[m]||{})[code]||0),bud:ms.map(m=>budgetOf(code,m))};
+}
+function dClient(C){
+ const cl=C.clients.filter(c=>!c.internal||c.mtdAct>0);
+ const stat=c=>c.internal?['Internal','']:c.budget<=0?(c.mtdAct>0?['No budget','a']:['–','']):c.used>1?['Over budget','r']:(c.projPct!=null&&c.projPct>1.05)?['At risk','a']:(c.projPct!=null&&c.projPct<.8&&C.wd.done>=5)?['Under-used','b']:['On track','g'];
+ const real=cl.filter(c=>!c.internal),sc=(F.client?C.clients.find(c=>c.c.code===F.client):null)||real.slice().sort((a,b)=>b.mtdAct-a.mtdAct)[0];
+ let det='';
+ if(sc){const tr=trendFor(C,sc.c.code,sc.mtdAct),rows=C.ts.filter(r=>r.client===sc.c.code);
+  const ge=new Map(),gt=new Map();rows.forEach(r=>{const a=ge.get(r.emp)||{emp:r.emp,act:0,chg:0};a.act+=r.hours;if(r.bill==='B')a.chg+=r.hours;ge.set(r.emp,a);const b=gt.get(r.task)||{task:r.task,act:0,chg:0};b.act+=r.hours;if(r.bill==='B')b.chg+=r.hours;gt.set(r.task,b)});
+  det='<div class="sec"><h3>Client detail · '+esc(cName(sc.c.code))+'</h3><span class="tag">Owner: '+esc(sc.c.owner||'–')+' · budget '+nf(sc.budget,0)+' h · pick another client with the Client filter</span></div><div class="g2"><div class="card"><h3>Monthly hours vs budget</h3><div class="sub">Earlier months come from imported history</div>'+chart({labels:tr.labels,title:'Client monthly hours',bars:[{name:'Hours',color:'var(--brand)',vals:tr.vals}],lines:[{name:'Budget',color:'var(--int)',vals:tr.bud}]})+'</div>'+
+  '<div class="card"><h3>Who worked on it</h3><div class="sub">'+esc(perLabel(C))+'</div>'+tbl([{h:'Employee',g:x=>esc(eName(x.emp))},{h:'Actual',n:1,g:x=>nf(x.act)},{h:'Chargeable',n:1,g:x=>nf(x.chg)}],Array.from(ge.values()).sort((a,b)=>b.act-a.act),{empty:'No hours yet.'})+
+  '<div style="height:10px"></div>'+tbl([{h:'Task',g:x=>esc(x.task)},{h:'Actual',n:1,g:x=>nf(x.act)},{h:'Chargeable',n:1,g:x=>nf(x.chg)}],Array.from(gt.values()).sort((a,b)=>b.act-a.act),{empty:''})+'</div></div>'}
+ return ph('Client dashboard',perLabel(C)+' · budget, actuals and projection per client')+
+ '<div class="kpis">'+kpi('Clients with hours',real.filter(c=>c.mtdAct>0).length,'of '+real.length+' shown')+kpi('Budget',nf(sum(real,c=>c.budget),0),'','','h')+kpi('Actual to date',nf(sum(real,c=>c.mtdAct)),'','g','h')+kpi('Projected month-end',C.co.proj==null?'–':nf(C.co.proj,0),'','','h')+
+ kpi('Over budget or at risk',real.filter(c=>{const s=stat(c)[0];return s==='Over budget'||s==='At risk'}).length,'','r')+'</div>'+
+ tbl([{h:'Client',g:c=>esc(cName(c.c.code))},{h:'Owner',g:c=>esc(c.c.owner||'–')},{h:'Budget',n:1,g:c=>hz(c.budget),f:r=>hz(sum(r,c=>c.budget))},{h:'Allocated',n:1,g:c=>hz(c.alloc),f:r=>hz(sum(r,c=>c.alloc))},{h:'Actual',n:1,g:c=>hz(c.act),f:r=>hz(sum(r,c=>c.act))},{h:'Chargeable',n:1,g:c=>hz(c.chg),f:r=>hz(sum(r,c=>c.chg))},{h:'Non-chg',n:1,g:c=>hz(c.nc),f:r=>hz(sum(r,c=>c.nc))},
+  {h:'To date',n:1,g:c=>hz(c.mtdAct),f:r=>hz(sum(r,c=>c.mtdAct))},{h:'Remaining',n:1,g:c=>c.budget>0?hz(c.remaining):'–',f:r=>hz(sum(r,c=>c.remaining))},{h:'Used',g:c=>c.used==null?'<span class="mut">–</span>':'<div class="bar-h">'+pbar(c.used,c.used>1?'r':c.used>.85?'a':'')+'<span>'+pc(c.used)+'</span></div>'},
+  {h:'Projected',n:1,g:c=>c.proj==null?'–':nf(c.proj),f:r=>nf(sum(r,c=>c.proj||0))},{h:'vs budget',n:1,t:'Projected month-end ÷ budget',g:c=>c.projPct==null?'–':'<span class="'+(c.projPct>1.05?'neg':c.projPct<.8?'mut':'pos')+'">'+pc(c.projPct)+'</span>'},{h:'Status',g:c=>{const s=stat(c);return s[1]?badge(s[0],s[1]):esc(s[0])}}],cl,{foot:1,empty:'No clients match the current filters.'})+det+noteMetrics();
+}
+function dIndividual(C){
+ const eid=F.emp||(ME.emp&&ME.emp.id)||(C.emps[0]&&C.emps[0].id),x=eid?C.byEmp.get(eid):null;
+ if(!x)return ph('Individual dashboard','')+'<div class="empty">Pick an employee with the Employee filter to see their dashboard.</div>';
+ const e=x.e,rows=C.ts.filter(r=>r.emp===eid),als=C.al.filter(r=>r.emp===eid),days=Array.from(C.byDay.keys()).sort();
+ const dA={},dC={},dN={};als.forEach(r=>{dA[r.date]=(dA[r.date]||0)+r.hours});rows.forEach(r=>{if(r.bill==='B')dC[r.date]=(dC[r.date]||0)+r.hours;else dN[r.date]=(dN[r.date]||0)+r.hours});
+ const cm=new Map();als.forEach(r=>{const a=cm.get(r.client)||{code:r.client,alloc:0,act:0,chg:0};a.alloc+=r.hours;cm.set(r.client,a)});rows.forEach(r=>{const a=cm.get(r.client)||{code:r.client,alloc:0,act:0,chg:0};a.act+=r.hours;if(r.bill==='B')a.chg+=r.hours;cm.set(r.client,a)});
+ const myAl=getAlerts(C).filter(a=>a.emp===eid).slice(0,8),T=today(),tod=flat().al.filter(r=>r.emp===eid&&r.date===T);
+ const pctT=x.target>0?Math.min(1,x.mtdChg/x.target):0,pace=x.target>0?Math.min(1,x.pace/x.target):0;
+ return ph(esc(e.name)+' <span class="mut" style="font-size:14px;font-weight:500">'+esc(e.ini)+'</span>',perLabel(C)+' · Manager: '+esc(e.mgrName||'–')+' · AM: '+esc(e.amName||'–'))+
+ '<div class="kpis">'+kpi('Monthly target',nf(x.target,0),'','',' h')+kpi('Allocation',nf(x.alloc),'Period','','h')+kpi('Actual',nf(x.act),'Period','g','h')+kpi('Chargeable',nf(x.chg),'Period','','h')+kpi('Non-chargeable',nf(x.nc),'','','h')+kpi('Utilization',pc(x.util),'of '+nf(x.cap,0)+' h capacity',tone(x.util,.75,.55))+
+ kpi('Variance',sgn(x.var),'Actual − allocation','','h')+kpi('Remaining target',nf(x.remaining),'','','h')+kpi('Target achievement',pc(x.ach),'',tone(x.ach,1,.6))+'</div>'+
+ '<div class="card"><h3>Progress to monthly target</h3><div class="sub">Chargeable '+nf(x.mtdChg)+' of '+nf(x.target,0)+' h · pace for today is '+nf(x.pace)+' h</div><div class="runway" style="margin:14px 0 8px"><div class="ach" style="width:'+pctT*100+'%"></div><div class="mk" style="left:'+pace*100+'%"><span>Pace</span></div></div></div>'+
+ '<div class="g2"><div class="card"><h3>Allocation vs actual by day</h3><div class="sub">Hours per day</div>'+chart({labels:days.map(d=>d.slice(8)),title:'Allocation vs actual',bars:[{name:'Allocation',color:'var(--hatch)',vals:days.map(d=>dA[d]||0)},{name:'Actual',color:'var(--brand)',vals:days.map(d=>(dC[d]||0)+(dN[d]||0))}],lines:[{name:'Daily capacity',color:'var(--red)',dash:1,vals:days.map(d=>isWD(d)?st().dailyCap:null)}]})+'</div>'+
+ '<div class="card"><h3>Clients</h3><div class="sub">Allocation and actual by client</div>'+tbl([{h:'Client',g:c=>esc(cName(c.code))},{h:'Allocation',n:1,g:c=>hz(c.alloc)},{h:'Actual',n:1,g:c=>hz(c.act)},{h:'Chargeable',n:1,g:c=>hz(c.chg)}],Array.from(cm.values()).sort((a,b)=>codeSort(a.code,b.code)),{empty:'No activity in this period.'})+'</div></div>'+
+ '<div class="g2" style="margin-top:14px"><div class="card"><h3>Today’s allocation</h3><div class="sub">'+fD(T)+'</div>'+tbl([{h:'Client',g:r=>esc(cName(r.client))},{h:'Task',g:r=>esc(r.task)},{h:'Hours',n:1,g:r=>nf(r.hours)},{h:'Type',g:r=>r.type==='C'?'Chargeable':'Non-chargeable'},{h:'Status',g:r=>esc(r.status||'')}],tod,{empty:'Nothing allocated today.'})+'</div>'+
+ '<div class="card"><h3>Exceptions</h3><div class="sub">Most recent for this person</div>'+tbl([{h:'Type',g:a=>badge(ALT[a.type][0],ALT[a.type][1])},{h:'Date',g:a=>a.date?fD(a.date):'Month'},{h:'Detail',c:()=>'wrap',g:a=>esc(a.msg)}],myAl,{empty:'No exceptions — nice.'})+'</div></div>'+noteMetrics();
+}
+
+/* ================= modal, audit, files ================= */
+let MODAL=null;
+const ACT={},CHG={},DR={al:{emp:'',client:'',task:'',reviewer:'',hours:'',type:'C',cat:'FA',status:'Planned',est:''},ts:{client:'',task:'',hours:'',cat:'FA',bill:'B',loc:'WFH'},ms:{q:''},au:{q:''}};
+const AL={date:today()},TS={emp:'',date:today()},ALF={type:''},RP={tab:'date'},MS={tab:'employees'};
+function openModal(html,o){o=o||{};MODAL=o;$('#modal').innerHTML='<div class="mb" data-a="mbg"><div class="m'+(o.wide?' w':'')+'" role="dialog" aria-modal="true">'+html+'</div></div>';const f=$('#modal input:not([type=hidden]):not([readonly]),#modal textarea');if(f&&!o.nofocus)f.focus()}
+function closeModal(cancel){const m=MODAL;MODAL=null;const h=$('#modal');if(h)h.innerHTML='';if(cancel&&m&&m.onClose)m.onClose()}
+function askConfirm(title,msg,label){return new Promise(res=>{openModal('<h3>'+esc(title)+'</h3><p>'+msg+'</p><div class="ft"><button type="button" class="btn" data-a="mclose">Cancel</button><button type="button" class="btn p" data-a="mok">'+esc(label||'Confirm')+'</button></div>',{onClose:()=>res(false),ok:()=>{closeModal();res(true)}})})}
+function askReason(title,detail){return new Promise(res=>{openModal('<h3>'+esc(title)+'</h3>'+(detail?'<div class="note">'+detail+'</div>':'')+'<form id="mf"><div class="fg"><label style="grid-column:1/-1">Correction reason (required)<textarea name="reason" required minlength="5" placeholder="Why is this record being changed?"></textarea></label></div><div class="err" id="merr"></div><div class="ft"><button type="button" class="btn" data-a="mclose">Cancel</button><button class="btn p">Save correction</button></div></form>',
+ {onSubmit:v=>{const r=(v.reason||'').trim();if(r.length<5)throw new Error('Please give a reason of at least 5 characters.');res(r)},onClose:()=>res(null)})})}
+function selOpts(arr,v,blank){return(blank!=null?'<option value="">'+blank+'</option>':'')+arr.map(x=>{const a=Array.isArray(x),val=a?x[0]:x,lab=a?x[1]:x;return'<option value="'+esc(val)+'"'+(String(val)===String(v)?' selected':'')+'>'+esc(lab)+'</option>'}).join('')}
+const dsel=(p,l,arr,v,blank,r)=>'<label>'+l+'<select data-d="'+p+'"'+(r?' data-r':'')+'>'+selOpts(arr,v,blank)+'</select></label>';
+const dinp=(p,l,t,v,x)=>'<label>'+l+'<input data-d="'+p+'" type="'+t+'" value="'+esc(v==null?'':v)+'" '+(x||'')+'></label>';
+function fld(k,l,t,v,o){o=o||{};
+ if(t==='select')return'<label>'+l+'<select name="'+k+'">'+selOpts(o.opts,v)+'</select></label>';
+ if(t==='bool')return'<label class="chk"><input type="checkbox" name="'+k+'"'+(v?' checked':'')+'> '+l+'</label>';
+ return'<label>'+l+'<input name="'+k+'" type="'+(t||'text')+'"'+(t==='number'?' step="0.25" min="0"':'')+' value="'+esc(v==null?'':v)+'"'+(o.req?' required':'')+(o.list?' list="'+o.list+'"':'')+(o.ph?' placeholder="'+esc(o.ph)+'"':'')+(o.ro?' readonly':'')+'></label>';
+}
+const activeEmps=()=>S.cfg.employees.filter(e=>e.active).sort((a,b)=>a.name.localeCompare(b.name));
+const empOpts=()=>activeEmps().map(e=>[e.id,e.name+' ('+e.ini+')']);
+const cliOpts=()=>S.cfg.clients.filter(c=>c.active).sort((a,b)=>codeSort(a.code,b.code)).map(c=>[c.code,cName(c.code)]);
+const taskOpts=()=>S.cfg.tasks.filter(t=>t.active).sort((a,b)=>a.name.localeCompare(b.name)).map(t=>t.name);
+async function logAudit(o){
+ const at=new Date().toISOString(),actor=ID.name||ID.email||'Admin';
+ const item={id:uid(),at,actor,actorEmail:ID.email||'',action:o.action,entity:o.entity,ref:o.ref||'',before:o.before||null,after:o.after||null,reason:o.reason||''};
+ await mut('audit',monthOf(at)+'_'+(ID.uid||'local'),d=>{d.month=monthOf(at);d.actor=actor;d.items=d.items||[];d.items.push(item);return d});
+}
+function csvText(rows){return rows.map(r=>r.map(c=>{c=c==null?'':String(c);return/[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c}).join(',')).join('\n')}
+async function saveFile(name,data){
+ try{if(window.claude&&typeof claude.use==='function'){const dl=await claude.use('downloads');if(dl){await dl.save({filename:name,data});return}}}catch(e){toast('Download failed: '+((e&&e.message)||e),1);return}
+ try{const u=URL.createObjectURL(new Blob([data],{type:'text/plain'})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000)}catch(e){toast('Download is not available here.',1)}
+}
+const refA=r=>r.date+' · '+eName(r.emp)+' · '+cName(r.client)+' · '+r.task+' · '+nf(r.hours)+'h';
+const compact=r=>{const o={};['emp','client','task','hours','est','type','cat','status','reviewer','bill','loc','date'].forEach(k=>{if(r[k]!==undefined&&r[k]!=='')o[k]=r[k]});return o};
+
+/* ================= daily allocation ================= */
+function applyDefaults(g){const d=DR[g],t=taskBy(d.task),c=clientBy(d.client);if(t){d.cat=t.cat;if(g==='al')d.type=t.bill==='B'?'C':'N';else d.bill=t.bill}if(c&&c.internal){d.cat='INT';if(g==='al')d.type='N';else d.bill='N'}}
+async function allocWrite(date,fn,info){
+ let reason='';
+ if(date<today()){reason=await askReason('Correct a historical allocation','Editing an allocation dated '+esc(fD(date))+' needs a reason and is written to the audit log.');if(!reason)return false}
+ await mut('alloc',date,d=>{d.date=date;d.month=monthOf(date);d.rows=d.rows||[];fn(d.rows);return d});
+ if(date<today())await logAudit(Object.assign({entity:'allocation',reason},info));
+ return true;
+}
+function allocForm(r,title){
+ return'<h3>'+title+'</h3><form id="mf"><div class="fg">'+fld('emp','Employee','select',r.emp,{opts:empOpts()})+fld('client','Client','select',r.client,{opts:cliOpts()})+fld('task','Task','select',r.task,{opts:taskOpts()})+fld('reviewer','Reviewer','select',r.reviewer,{opts:[['','—']].concat(empOpts())})+
+ fld('hours','Allocation hours','number',r.hours,{req:1})+fld('est','Estimate hours','number',r.est)+fld('type','Type','select',r.type,{opts:[['C','Chargeable'],['N','Non-chargeable']]})+fld('cat','Category','select',r.cat,{opts:CATS.map(c=>[c,CATN[c]])})+fld('status','Delivery status','select',r.status,{opts:['Planned','In progress','Delivered','Delayed']})+
+ '</div><div class="err" id="merr"></div><div class="ft"><button type="button" class="btn" data-a="mclose">Cancel</button><button class="btn p">Save</button></div></form>';
+}
+function pAllocation(C){
+ const d=AL.date,T=today(),fl=flat(),scope=new Set(scopeEmps().map(e=>e.id)),cap=st().dailyCap||8,dr=DR.al;
+ const rows=fl.al.filter(r=>r.date===d&&scope.has(r.emp)).sort((a,b)=>eName(a.emp).localeCompare(eName(b.emp))||codeSort(a.client,b.client));
+ const B=dayBoard(d,scopeEmps().filter(e=>e.active)),tabs=boardTables(B,d<=T),hist=d<T,cur=dr.emp?fl.alDay.get(dr.emp+'|'+d)||0:0;
+ const form=ME.admin?'<div class="card"><h3>Add allocation</h3><div class="sub">Plan hours for '+esc(fD(d))+'. '+(hist?'This date is in the past: adding a row is a correction and needs a reason.':'')+'</div><div class="fg">'+
+  dsel('al.emp','Employee',empOpts(),dr.emp,'Select…',1)+dsel('al.client','Client',cliOpts(),dr.client,'Select…',1)+dsel('al.task','Task',taskOpts(),dr.task,'Select…',1)+dsel('al.reviewer','Reviewer',empOpts(),dr.reviewer,'—')+dinp('al.hours','Allocation hours','number',dr.hours,'step="0.25" min="0"')+dinp('al.est','Estimate (optional)','number',dr.est,'step="0.25" min="0"')+
+  dsel('al.type','Chargeable?',[['C','Chargeable'],['N','Non-chargeable']],dr.type)+dsel('al.cat','Category',CATS.map(c=>[c,CATN[c]]),dr.cat)+dsel('al.status','Delivery status',['Planned','In progress','Delivered','Delayed'],dr.status)+'<div><button class="btn p" data-a="al_add">Add row</button></div></div>'+
+  (dr.emp?'<div class="tag" style="margin-top:6px">'+esc(eName(dr.emp))+' has '+nf(cur)+' h allocated on this day (capacity '+nf(cap)+' h)'+(cur+(+dr.hours||0)>cap?' — this would over-allocate.':'.')+'</div>':'')+'</div>':'';
+ const cols=[{h:'Client',g:r=>esc(cName(r.client))},{h:'Task',c:()=>'wrap',g:r=>esc(r.task)},{h:'Employee',g:r=>esc(eName(r.emp))+' <span class="mut">'+esc(eIni(r.emp))+'</span>'},{h:'Reviewer',g:r=>r.reviewer?esc(eIni(r.reviewer)):'<span class="mut">n/a</span>'},
+  {h:'Chargeable',n:1,g:r=>r.type==='C'?nf(r.hours):'–',f:x=>hz(sum(x,r=>r.type==='C'?r.hours:0))},{h:'Non-chargeable',n:1,g:r=>r.type==='N'?nf(r.hours):'–',f:x=>hz(sum(x,r=>r.type==='N'?r.hours:0))},{h:'Estimate',n:1,g:r=>nf(r.est),f:x=>hz(sum(x,r=>r.est))},{h:'Category',g:r=>CATN[r.cat]||r.cat},
+  {h:'Delivery',g:r=>ME.admin&&!hist?'<select class="inl" style="width:110px" data-c="al_status" data-id="'+r.id+'">'+selOpts(['Planned','In progress','Delivered','Delayed'],r.status)+'</select>':badge(r.status||'Planned',r.status==='Delivered'?'g':r.status==='Delayed'?'r':'')}];
+ if(ME.admin)cols.push({h:'',g:r=>'<button class="btn s" data-a="al_edit" data-id="'+r.id+'">Edit</button> <button class="btn s d" data-a="al_del" data-id="'+r.id+'">Delete</button>'});
+ return ph('Daily allocation',fDL(d)+(hist?' · historical — corrections are logged':d===T?' · today':' · upcoming'),
+  '<div class="fg" style="grid-template-columns:auto auto auto auto;gap:6px"><button class="btn" data-a="al_prev">‹ Prev</button><input class="inl" style="width:140px" type="date" value="'+d+'" data-c="al_date"><button class="btn" data-a="al_next">Next ›</button><button class="btn" data-a="al_today">Today</button></div>')+form+
+  '<div class="kpis">'+kpi('Rows',rows.length)+kpi('Chargeable allocated',nf(sum(rows,r=>r.type==='C'?r.hours:0)),'','g','h')+kpi('Non-chargeable',nf(sum(rows,r=>r.type==='N'?r.hours:0)),'','','h')+kpi('Free capacity',nf(sum(B.rows,x=>x.avail)),'across '+B.rows.length+' people','g','h')+kpi('Over-allocated',B.rows.filter(x=>x.alloc>cap+.01).length,'people above '+nf(cap)+' h',B.rows.some(x=>x.alloc>cap+.01)?'r':'')+'</div>'+
+  (ME.admin&&!hist?'<div style="margin-bottom:10px"><button class="btn" data-a="al_copy">Copy allocation from previous working day</button></div>':'')+
+  tbl(cols,rows,{foot:1,empty:'No allocation recorded for this day.'})+
+  '<div class="sec"><h3>Auto-generated summaries</h3><span class="tag">Employee-wise and client-wise, built from the rows above</span></div><div class="g2"><div>'+tabs.emp+'</div><div>'+tabs.cl+'</div></div>';
+}
+ACT.al_prev=()=>{AL.date=addDays(AL.date,-1);F.month=monthOf(AL.date);render()};
+ACT.al_next=()=>{AL.date=addDays(AL.date,1);F.month=monthOf(AL.date);render()};
+ACT.al_today=()=>{AL.date=today();F.month=monthOf(AL.date);render()};
+CHG.al_date=t=>{if(t.value){AL.date=t.value;F.month=monthOf(t.value);render()}};
+CHG.al_status=async t=>{const id=t.dataset.id,r=flat().al.find(x=>x.id===id);if(!r)return;try{await allocWrite(r.date,rows=>{const x=rows.find(y=>y.id===id);if(x)x.status=t.value},{action:'update',ref:refA(r)})}catch(e){toast(e.message,1)}};
+ACT.al_add=async()=>{const d=DR.al,h=+d.hours;if(!d.emp||!d.client||!d.task){toast('Choose employee, client and task.',1);return}if(!(h>0)){toast('Enter allocation hours.',1);return}
+ const row={id:uid(),date:AL.date,emp:d.emp,client:d.client,task:d.task,reviewer:d.reviewer,hours:h,est:d.est!==''?+d.est:h,type:d.type,cat:d.cat,status:d.status};
+ try{const ok=await allocWrite(AL.date,rows=>rows.push(row),{action:'create',ref:refA(row),after:compact(row)});if(ok){DR.al.task='';DR.al.hours='';DR.al.est='';toast('Allocation added');render()}}catch(e){toast(e.message,1)}};
+ACT.al_edit=t=>{const id=t.dataset.id,r=flat().al.find(x=>x.id===id);if(!r)return;
+ openModal(allocForm(r,'Edit allocation'),{onSubmit:async v=>{const h=+v.hours;if(!(h>0))throw new Error('Enter allocation hours.');
+  const nr=Object.assign({},r,{emp:v.emp,client:v.client,task:v.task,reviewer:v.reviewer,hours:h,est:v.est!==''?+v.est:h,type:v.type,cat:v.cat,status:v.status});
+  const b=Object.assign({},r);const ok=await allocWrite(r.date,rows=>{const i=rows.findIndex(x=>x.id===id);if(i>-1)rows[i]=nr},{action:'update',ref:refA(nr),before:compact(b),after:compact(nr)});if(!ok)return false;toast('Allocation updated')}})};
+ACT.al_del=async t=>{const id=t.dataset.id,r=flat().al.find(x=>x.id===id);if(!r)return;if(!await askConfirm('Delete this allocation row?',esc(refA(r)),'Delete'))return;
+ try{const ok=await allocWrite(r.date,rows=>{const i=rows.findIndex(x=>x.id===id);if(i>-1)rows.splice(i,1)},{action:'delete',ref:refA(r),before:compact(r)});if(ok)toast('Row deleted')}catch(e){toast(e.message,1)}};
+ACT.al_copy=async()=>{const d=AL.date,ds=Object.keys(S.alloc).filter(k=>k<d&&(S.alloc[k].rows||[]).length).sort();const pv=ds[ds.length-1];if(!pv){toast('No earlier allocation found in the loaded months.',1);return}
+ const fl=flat(),src=(S.alloc[pv].rows||[]).filter(r=>!(fl.lv.get(r.emp+'|'+d)>0)&&empBy(r.emp)&&empBy(r.emp).active);
+ if(!await askConfirm('Copy '+src.length+' rows from '+fD(pv)+'?','Rows are added to '+esc(fD(d))+' with status Planned. People on leave that day are skipped.','Copy rows'))return;
+ try{await mut('alloc',d,x=>{x.date=d;x.month=monthOf(d);x.rows=(x.rows||[]).concat(src.map(r=>Object.assign({},r,{id:uid(),date:d,status:'Planned'})));return x});toast('Copied '+src.length+' rows')}catch(e){toast(e.message,1)}};
+
+/* ================= timesheet ================= */
+function tsVals(d,eid,date,exId){
+ const h=+d.hours;if(!d.client||!d.task)throw new Error('Choose a client and a task.');if(!(h>0)||h>24)throw new Error('Hours must be between 0.25 and 24.');
+ const doc=S.ts[monthOf(date)+'_'+eid],others=sum((doc&&doc.entries||[]).filter(e=>e.date===date&&e.id!==exId),e=>e.hours);if(others+h>24)throw new Error('A day cannot exceed 24 hours in total.');
+ return{client:d.client,task:d.task,hours:h,cat:d.cat,bill:d.bill,loc:d.loc};
+}
+async function tsWrite(eid,date,fn,info){
+ let reason='';const T=today(),hist=date<T;
+ if(!ME.admin){if(date!==T||!ME.emp||ME.emp.id!==eid)throw new Error('You can only enter or change your own hours for today. Historical records need an admin correction.')}
+ else if(hist){reason=await askReason('Correct a historical timesheet','Changing '+esc(eName(eid))+'’s hours for '+esc(fD(date))+' needs a reason and is written to the audit log.');if(!reason)return false}
+ await mut('ts',monthOf(date)+'_'+eid,d=>{d.emp=eid;d.month=monthOf(date);d.entries=d.entries||[];fn(d.entries,hist&&ME.admin);return d});
+ if(ME.admin)await logAudit(Object.assign({entity:'timesheet',reason},info));
+ return true;
+}
+const refT=(e,eid,date)=>date+' · '+eName(eid)+' · '+cName(e.client)+' · '+e.task+' · '+nf(e.hours)+'h';
+function tsForm(r,title){
+ return'<h3>'+title+'</h3><form id="mf"><div class="fg">'+fld('client','Client','select',r.client,{opts:cliOpts()})+fld('task','Task','select',r.task,{opts:taskOpts()})+fld('hours','Actual hours','number',r.hours,{req:1})+fld('cat','Category','select',r.cat,{opts:CATS.map(c=>[c,CATN[c]])})+fld('bill','Billing','select',r.bill,{opts:[['B','Billable'],['N','Non-billable']]})+fld('loc','Location','select',r.loc,{opts:['WFH','Office']})+
+ '</div><div class="err" id="merr"></div><div class="ft"><button type="button" class="btn" data-a="mclose">Cancel</button><button class="btn p">Save</button></div></form>';
+}
+function pTimesheet(C){
+ const T=today(),fl=flat(),list=scopeEmps().slice().sort((a,b)=>a.name.localeCompare(b.name));
+ if(!list.length)return ph('Timesheet','')+'<div class="empty">No employee records are linked to your account yet.</div>';
+ let eid=TS.emp||(ME.emp&&ME.emp.id)||list[0].id;if(!list.some(e=>e.id===eid))eid=list[0].id;
+ const date=TS.date,own=!!(ME.emp&&ME.emp.id===eid),canEd=ME.admin||(own&&date===T),hist=date<T,dr=DR.ts;
+ const doc=S.ts[monthOf(date)+'_'+eid],ents=((doc&&doc.entries)||[]).filter(e=>e.date===date),tot=sum(ents,e=>e.hours),al=fl.alDay.get(eid+'|'+date)||0,lv=fl.lv.get(eid+'|'+date)||0;
+ const mo=monthOf(date),days=[];for(let d=mo+'-01';d<=mEnd(mo);d=addDays(d,1)){const a=fl.alDay.get(eid+'|'+d)||0,x=fl.tsDay.get(eid+'|'+d)||0;if(isWD(d)||a>0||x>0)days.push({d,a,x,lv:fl.lv.get(eid+'|'+d)||0})}
+ const chgDay=new Map();fl.ts.forEach(r=>{if(r.emp===eid&&monthOf(r.date)===mo&&r.bill==='B')chgDay.set(r.date,(chgDay.get(r.date)||0)+r.hours)});
+ const banner=canEd?(ME.admin&&(hist||!own)?'<div class="note a">Admin mode: every change is written to the audit log'+(hist?' and needs a correction reason.':'.')+'</div>':''):
+  '<div class="note">'+(own?'This is a historical record. It is read-only — ask an admin to correct it.':'You are viewing '+esc(eName(eid))+'’s timesheet in read-only mode.')+(date===T?' Hours for today can only be entered by the employee or an admin.':'')+'</div>';
+ const cols=[{h:'Client',g:e=>esc(cName(e.client))},{h:'Task',c:()=>'wrap',g:e=>esc(e.task)},{h:'Hours',n:1,g:e=>nf(e.hours),f:r=>nf(sum(r,e=>e.hours))},{h:'Category',g:e=>CATN[e.cat]||e.cat},{h:'Billing',g:e=>e.bill==='B'?'Billable':'Non-billable'},{h:'Location',g:e=>esc(e.loc||'–')},{h:'',g:e=>(e.corr?badge('Corrected','a')+' ':'')+(canEd?'<button class="btn s" data-a="ts_edit" data-id="'+e.id+'">Edit</button> <button class="btn s d" data-a="ts_del" data-id="'+e.id+'">Delete</button>':'')}];
+ const form=canEd?'<div class="card"><h3>Add actual hours</h3><div class="sub">'+(date===T?'Today':esc(fD(date)))+' · '+esc(eName(eid))+'</div><div class="fg">'+dsel('ts.client','Client',cliOpts(),dr.client,'Select…',1)+dsel('ts.task','Task',taskOpts(),dr.task,'Select…',1)+dinp('ts.hours','Actual hours','number',dr.hours,'step="0.25" min="0" max="24"')+
+  dsel('ts.cat','Category',CATS.map(c=>[c,CATN[c]]),dr.cat)+dsel('ts.bill','Billing',[['B','Billable'],['N','Non-billable']],dr.bill)+dsel('ts.loc','Location',['WFH','Office'],dr.loc)+'<div class="chips"><button class="btn p" data-a="ts_add">Add hours</button><button class="btn" data-a="ts_fill">Fill from allocation</button></div></div></div>':'';
+ return ph('Timesheet',esc(eName(eid))+' · '+fDL(date)+(date===T?' · today':''),
+  '<div class="fg" style="grid-template-columns:repeat(auto-fit,minmax(120px,auto));gap:6px">'+(list.length>1?'<select class="inl" style="width:180px" data-c="ts_emp">'+selOpts(list.map(e=>[e.id,e.name+' ('+e.ini+')']),eid)+'</select>':'')+
+  '<button class="btn" data-a="ts_prev">‹</button><input class="inl" style="width:140px" type="date" value="'+date+'" '+(ME.admin?'':'max="'+T+'"')+' data-c="ts_date"><button class="btn" data-a="ts_next">›</button><button class="btn" data-a="ts_today">Today</button></div>')+banner+
+  '<div class="kpis">'+kpi('Logged',nf(tot),'for '+(date===T?'today':fD(date)),tot>0?'g':(date<T&&isWD(date)&&lv<(st().dailyCap||8)?'r':''),'h')+kpi('Allocated',nf(al),'planned hours','','h')+kpi('Variance',sgn(tot-al),'Logged − allocated','','h')+kpi('Chargeable',nf(sum(ents.filter(e=>e.bill==='B'),e=>e.hours)),'','','h')+(lv?kpi('Leave',nf(lv),'','','h'):'')+'</div>'+form+
+  tbl(cols,ents,{foot:1,empty:canEd?'Nothing logged yet for this day. Add hours above or fill them from the allocation.':'No hours recorded for this day.'})+
+  '<div class="sec"><h3>History · '+fM(mo)+'</h3><span class="tag">Read-only for employees</span></div>'+
+  tbl([{h:'Date',g:x=>fD(x.d)},{h:'Allocated',n:1,g:x=>hz(x.a)},{h:'Logged',n:1,g:x=>hz(x.x)},{h:'Chargeable',n:1,g:x=>hz(chgDay.get(x.d)||0)},{h:'Variance',n:1,c:x=>vcl(x.x-x.a),g:x=>x.x||x.a?sgn(x.x-x.a):'–'},{h:'Status',g:x=>x.x>0?badge('Logged','g'):x.lv>0?badge('Leave','b'):x.d<T&&isWD(x.d)?badge('Missing','r'):'<span class="mut">–</span>'},{h:'',g:x=>'<button class="btn s" data-a="ts_view" data-d="'+x.d+'">View</button>'}],days,{max:420,foot:1,empty:'No working days in this month.'});
+}
+CHG.ts_emp=t=>{TS.emp=t.value;render()};
+CHG.ts_date=t=>{if(t.value){TS.date=t.value;F.month=monthOf(t.value);render()}};
+ACT.ts_prev=()=>{TS.date=addDays(TS.date,-1);F.month=monthOf(TS.date);render()};
+ACT.ts_next=()=>{if(!ME.admin&&TS.date>=today())return;TS.date=addDays(TS.date,1);F.month=monthOf(TS.date);render()};
+ACT.ts_today=()=>{TS.date=today();F.month=monthOf(TS.date);render()};
+ACT.ts_view=t=>{TS.date=t.dataset.d;window.scrollTo(0,0);render()};
+function curTsEmp(){const list=scopeEmps();let eid=TS.emp||(ME.emp&&ME.emp.id)||(list[0]&&list[0].id);if(!list.some(e=>e.id===eid)&&list[0])eid=list[0].id;return eid}
+ACT.ts_add=async()=>{const eid=curTsEmp(),date=TS.date;try{const v=tsVals(DR.ts,eid,date);const e=Object.assign({id:uid(),date,by:ID.uid||'local',byName:ID.name||ID.email||'',at:new Date().toISOString()},v);
+ const ok=await tsWrite(eid,date,(rows,corr)=>{if(corr)e.corr=true;rows.push(e)},{action:'create',ref:refT(e,eid,date),after:compact(e)});if(ok){DR.ts.hours='';toast('Hours saved');render()}}catch(err){toast(err.message,1)}};
+ACT.ts_fill=async()=>{const eid=curTsEmp(),date=TS.date,fl=flat(),doc=S.ts[monthOf(date)+'_'+eid],have=(doc&&doc.entries||[]).filter(e=>e.date===date);
+ const src=fl.al.filter(r=>r.emp===eid&&r.date===date&&!have.some(e=>e.client===r.client&&e.task===r.task));if(!src.length){toast('Everything allocated is already logged.');return}
+ try{const ne=src.map(r=>({id:uid(),date,client:r.client,task:r.task,hours:r.hours,cat:r.cat,bill:r.type==='C'?'B':'N',loc:DR.ts.loc,by:ID.uid||'local',byName:ID.name||ID.email||'',at:new Date().toISOString()}));
+  const ok=await tsWrite(eid,date,(rows,corr)=>{ne.forEach(e=>{if(corr)e.corr=true;rows.push(e)})},{action:'create',ref:date+' · '+eName(eid)+' · filled '+ne.length+' rows from allocation',after:{rows:ne.length,hours:sum(ne,e=>e.hours)}});if(ok)toast('Added '+ne.length+' rows — adjust hours to match what you actually worked')}catch(err){toast(err.message,1)}};
+ACT.ts_edit=t=>{const eid=curTsEmp(),date=TS.date,id=t.dataset.id,doc=S.ts[monthOf(date)+'_'+eid],e=((doc&&doc.entries)||[]).find(x=>x.id===id);if(!e)return;
+ openModal(tsForm(e,'Edit hours'),{onSubmit:async v=>{const nv=tsVals(v,eid,date,id),b=Object.assign({},e);const ne=Object.assign({},e,nv);
+  const ok=await tsWrite(eid,date,(rows,corr)=>{const i=rows.findIndex(x=>x.id===id);if(i>-1){if(corr)ne.corr=true;rows[i]=ne}},{action:'update',ref:refT(ne,eid,date),before:compact(b),after:compact(ne)});if(!ok)return false;toast('Entry updated')}})};
+ACT.ts_del=async t=>{const eid=curTsEmp(),date=TS.date,id=t.dataset.id,doc=S.ts[monthOf(date)+'_'+eid],e=((doc&&doc.entries)||[]).find(x=>x.id===id);if(!e)return;
+ if(!await askConfirm('Delete this entry?',esc(refT(e,eid,date)),'Delete'))return;
+ try{const ok=await tsWrite(eid,date,rows=>{const i=rows.findIndex(x=>x.id===id);if(i>-1)rows.splice(i,1)},{action:'delete',ref:refT(e,eid,date),before:compact(e)});if(ok)toast('Entry deleted')}catch(err){toast(err.message,1)}};
+
+/* ================= alerts ================= */
+function pAlerts(C){
+ const all=getAlerts(C),cnt={};all.forEach(a=>{cnt[a.type]=(cnt[a.type]||0)+1});const rows=(ALF.type?all.filter(a=>a.type===ALF.type):all);
+ const chips='<div class="chips" style="margin-bottom:12px"><button class="btn'+(ALF.type?'':' p')+'" data-a="alt" data-t="">All ('+all.length+')</button>'+Object.keys(ALT).filter(k=>cnt[k]||ALF.type===k).map(k=>'<button class="btn'+(ALF.type===k?' p':'')+'" data-a="alt" data-t="'+k+'">'+ALT[k][0]+' ('+(cnt[k]||0)+')</button>').join('')+'</div>';
+ return ph('Exception alerts',perLabel(C)+' · '+all.filter(a=>a.sev==='high').length+' high severity')+chips+
+ tbl([{h:'Severity',g:a=>badge(a.sev==='high'?'High':'Medium',a.sev==='high'?'r':'a')},{h:'Exception',g:a=>badge(ALT[a.type][0],ALT[a.type][1])},{h:'Employee / client',g:a=>a.emp?esc(eName(a.emp))+' <span class="mut">'+esc(eIni(a.emp))+'</span>':esc(cName(a.client))},{h:'Date',g:a=>a.date?fD(a.date):'Month to date'},{h:'Detail',c:()=>'wrap',g:a=>esc(a.msg)}],rows.slice(0,400),{empty:'No exceptions for the current filters.'})+
+ (rows.length>400?'<div class="tag" style="margin-top:6px">Showing the first 400 of '+rows.length+'. Narrow the filters to see the rest.</div>':'')+
+ '<details class="tag" style="margin-top:10px"><summary>Rules and thresholds</summary><div class="note" style="margin-top:6px">Missing actuals: working day before today with no hours and no leave. Low chargeable: chargeable below '+pc(st().lowPct)+' of target pace (after 3 working days). Actual below allocation: more than '+nf(st().belowTol)+' h under the day’s allocation. Actual above estimate: more than '+nf(st().aboveTol)+' h over a row’s estimate. High non-chargeable: over '+pc(st().ncPct)+' of logged hours. Over-allocation: allocation above '+nf(st().dailyCap)+' h a day. Change thresholds in Settings.</div></details>';
+}
+ACT.alt=t=>{ALF.type=t.dataset.t;render()};
+
+/* ================= reports ================= */
+function rtable(cols,rows,name){
+ const show=(c,r)=>{const v=c.v(r);return c.k==='h'?hz(v):c.k==='p'?pc(v):c.k==='s'?sgn(v):esc(v)};
+ const html=tbl(cols.map(c=>({h:c.h,n:c.k!=='t',c:c.k==='s'?(r=>vcl(c.v(r))):null,g:r=>show(c,r),f:r=>c.k==='h'||c.k==='s'?(c.k==='s'?sgn(sum(r,c.v)):hz(sum(r,c.v))):(c.tot?c.tot(r):(c===cols[0]?'Total':''))})),rows,{foot:1,max:560});
+ return{html,csv:()=>csvText([cols.map(c=>c.h)].concat(rows.map(r=>cols.map(c=>{const v=c.v(r);return typeof v==='number'?Math.round(v*1000)/1000:v})))),name};
+}
+function repDefs(C){
+ const days=Array.from(C.byDay.values()).filter(d=>d.act>0||d.alloc>0||isWD(d.date));
+ return{
+  date:rtable([{h:'Date',k:'t',v:d=>d.date},{h:'People logged',k:'t',v:d=>d.emps.size,tot:r=>''},{h:'Allocation',k:'h',v:d=>d.alloc},{h:'Estimate',k:'h',v:d=>d.est},{h:'Actual',k:'h',v:d=>d.act},{h:'Chargeable',k:'h',v:d=>d.chg},{h:'Non-chargeable',k:'h',v:d=>d.nc},{h:'Variance',k:'s',v:d=>d.act-d.alloc},{h:'FA',k:'h',v:d=>d.FA},{h:'CS',k:'h',v:d=>d.CS},{h:'Internal',k:'h',v:d=>d.INT}],days,'date-wise'),
+  emp:rtable([{h:'Employee',k:'t',v:x=>x.e.name},{h:'Initial',k:'t',v:x=>x.e.ini},{h:'Manager',k:'t',v:x=>x.e.mgrName},{h:'Target',k:'h',v:x=>x.target},{h:'Allocation',k:'h',v:x=>x.alloc},{h:'Estimate',k:'h',v:x=>x.est},{h:'Actual',k:'h',v:x=>x.act},{h:'Chargeable',k:'h',v:x=>x.chg},{h:'Non-chargeable',k:'h',v:x=>x.nc},{h:'Utilization',k:'p',v:x=>x.util},{h:'Variance',k:'s',v:x=>x.var},{h:'Target achievement',k:'p',v:x=>x.ach},{h:'Remaining target',k:'h',v:x=>x.remaining}],C.eArr,'employee-wise'),
+  client:rtable([{h:'Client',k:'t',v:c=>cName(c.c.code)},{h:'Owner',k:'t',v:c=>c.c.owner||''},{h:'Budget',k:'h',v:c=>c.budget},{h:'Allocation',k:'h',v:c=>c.alloc},{h:'Actual',k:'h',v:c=>c.act},{h:'Chargeable',k:'h',v:c=>c.chg},{h:'Non-chargeable',k:'h',v:c=>c.nc},{h:'Variance',k:'s',v:c=>c.act-c.alloc},{h:'To date',k:'h',v:c=>c.mtdAct},{h:'Remaining budget',k:'h',v:c=>c.remaining},{h:'Budget used',k:'p',v:c=>c.used},{h:'Projected',k:'h',v:c=>c.proj||0}],C.clients,'client-wise'),
+  task:rtable([{h:'Task',k:'t',v:t=>t.name},{h:'Clients',k:'t',v:t=>t.clients.size,tot:r=>''},{h:'People',k:'t',v:t=>t.emps.size,tot:r=>''},{h:'Allocation',k:'h',v:t=>t.alloc},{h:'Estimate',k:'h',v:t=>t.est},{h:'Actual',k:'h',v:t=>t.act},{h:'Chargeable',k:'h',v:t=>t.chg},{h:'Non-chargeable',k:'h',v:t=>t.nc},{h:'Variance',k:'s',v:t=>t.act-t.alloc}],C.tasks,'task-wise')};
+}
+function pReports(C){
+ const D=repDefs(C),tabs=[['date','Date-wise'],['emp','Employee-wise'],['client','Client-wise'],['task','Task-wise']],cur=D[RP.tab]||D.date;
+ return ph('Reports',perLabel(C)+' · '+esc(cur.name)+' · use the filters above to slice further','<button class="btn" data-a="rep_csv">Download CSV</button>')+
+ '<div class="tabs">'+tabs.map(t=>'<a data-a="rep" data-t="'+t[0]+'" class="'+(RP.tab===t[0]?'on':'')+'">'+t[1]+'</a>').join('')+'</div>'+cur.html;
+}
+ACT.rep=t=>{RP.tab=t.dataset.t;render()};
+ACT.rep_csv=()=>{const D=repDefs(build()),c=D[RP.tab]||D.date;saveFile('report-'+c.name+'-'+(F.date||F.month)+'.csv',c.csv())};
+
+/* ================= monthly management report ================= */
+function pMonthly(C){
+ const co=C.co,teams=groupTeams(C,e=>e.mgrName),real=C.clients.filter(c=>!c.internal&&(c.budget>0||c.mtdAct>0)),days=Array.from(C.byDay.values());
+ const cd=new Map();C.ts.forEach(r=>{const c=clientBy(r.client);if(c&&c.internal)return;cd.set(r.date,(cd.get(r.date)||0)+r.hours)});
+ const wdn=wdList(C.month+'-01',mEnd(C.month)).length||1;let cum=0,wi=0;
+ const run=days.filter(d=>d.date<=(C.month===monthOf(today())?today():mEnd(C.month))&&(isWD(d.date)||cd.get(d.date))).map(d=>{cum+=cd.get(d.date)||0;if(isWD(d.date))wi++;const pace=co.budget*wi/wdn;return{date:d.date,h:cd.get(d.date)||0,cum,pace,gap:cum-pace}});
+ return ph('Monthly management report',fM(C.month)+' · '+esc(st().company),'<button class="btn" data-a="mo_html">Download report (.html)</button> <button class="btn" data-a="mo_csv">Employee CSV</button>')+
+ '<div id="rep"><h2 style="margin:0 0 4px">'+esc(st().company)+' — management report, '+fM(C.month)+'</h2><div class="mut" style="margin-bottom:12px">'+C.wd.done+' of '+C.wd.total+' working days completed</div>'+
+ '<div class="card"><h3>Company budget vs actual</h3>'+runway(co)+'<div class="kpis" style="margin:0">'+kpi('QC budget',n0(co.budget),'','',' h')+kpi('Achieved',nf(co.ach),pc(co.achPct)+' of budget','g','h')+kpi('Pending',nf(co.pending),'','','h')+kpi('Projected month-end',co.proj==null?'–':n0(co.proj),co.proj==null?'':pc(co.projPct)+' of budget',co.proj==null?'':co.projPct>1.05?'r':'g','h')+kpi('Chargeable',nf(co.chg),'','','h')+kpi('Utilization',pc(co.util),'',tone(co.util,.75,.55))+kpi('Daily run rate',nf(co.rate),'','','h/day')+'</div></div>'+
+ '<div class="sec"><h3>Client performance</h3></div>'+tbl([{h:'Client',g:c=>esc(cName(c.c.code))},{h:'Owner',g:c=>esc(c.c.owner||'–')},{h:'Budget',n:1,g:c=>hz(c.budget),f:r=>hz(sum(r,c=>c.budget))},{h:'Actual',n:1,g:c=>hz(c.mtdAct),f:r=>hz(sum(r,c=>c.mtdAct))},{h:'Chargeable',n:1,g:c=>hz(c.mtdChg),f:r=>hz(sum(r,c=>c.mtdChg))},{h:'Used',n:1,g:c=>pcb(c.used==null?null:1-Math.abs(1-c.used)*.6,1,.7).replace(/>(\d+%)</,'>'+pc(c.used)+'<')},{h:'Projected',n:1,g:c=>c.proj==null?'–':nf(c.proj),f:r=>nf(sum(r,c=>c.proj||0))},{h:'vs budget',n:1,c:c=>c.gap==null?'':vcl(c.gap),g:c=>c.gap==null?'–':sgn(-c.gap)}],real,{foot:1,empty:'No client activity in this month.'})+
+ '<div class="sec"><h3>Team performance</h3></div>'+tbl([{h:'Manager',g:g=>esc(g.name)},{h:'People',n:1,g:g=>g.n,f:r=>sum(r,g=>g.n)},{h:'Target',n:1,g:g=>nf(g.target,0),f:r=>nf(sum(r,g=>g.target),0)},{h:'Actual',n:1,g:g=>nf(g.act),f:r=>nf(sum(r,g=>g.act))},{h:'Chargeable',n:1,g:g=>nf(g.mtdChg),f:r=>nf(sum(r,g=>g.mtdChg))},{h:'Achievement',n:1,g:g=>pcb(g.ach,1,.7)},{h:'Utilization',n:1,g:g=>pcb(g.util,.75,.55)},{h:'Variance',n:1,c:g=>vcl(g.var),g:g=>sgn(g.var)}],teams,{foot:1})+
+ '<div class="sec"><h3>Employee performance</h3></div>'+tbl([{h:'Employee',g:x=>esc(x.e.name)},{h:'Target',n:1,g:x=>nf(x.target,0)},{h:'Actual',n:1,g:x=>nf(x.act)},{h:'Chargeable',n:1,g:x=>nf(x.mtdChg)},{h:'Non-chg',n:1,g:x=>nf(x.act-x.chg)},{h:'Achievement',n:1,g:x=>pcb(x.ach,1,.7)},{h:'Utilization',n:1,g:x=>pcb(x.util,.75,.55)},{h:'Remaining',n:1,g:x=>nf(x.remaining)}],C.eArr,{})+
+ '<div class="sec"><h3>Run rate</h3></div><div class="card">'+chart({labels:run.map(r=>r.date.slice(8)),title:'Run rate',bars:[{name:'Daily hours',color:'var(--hatch)',vals:run.map(r=>r.h)}],lines:[{name:'Cumulative',color:'var(--brand)',vals:run.map(r=>r.cum)},{name:'Budget pace',color:'var(--int)',dash:1,vals:run.map(r=>r.pace)}]})+'</div>'+
+ tbl([{h:'Date',g:r=>fD(r.date)},{h:'Hours',n:1,g:r=>hz(r.h)},{h:'Cumulative',n:1,g:r=>nf(r.cum)},{h:'Budget pace',n:1,g:r=>nf(r.pace)},{h:'Ahead / (behind)',n:1,c:r=>vcl(r.gap),g:r=>sgn(r.gap)}],run,{max:380,empty:'No days yet.'})+'</div>';
+}
+ACT.mo_html=()=>{const el=$('#rep');if(!el)return;saveFile('management-report-'+F.month+'.html','<!DOCTYPE html><html><head><meta charset="utf-8"><title>Management report '+F.month+'</title><style>'+$('style').textContent+'body{padding:24px;max-width:1100px;margin:auto}</style></head><body>'+el.innerHTML+'</body></html>')};
+ACT.mo_csv=()=>{const D=repDefs(build());saveFile('employee-performance-'+F.month+'.csv',D.emp.csv())};
+
+/* ================= weekly email reports ================= */
+let WK={msgs:[]};
+function copyText(t){const fb=()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Copied')}catch(e){toast('Copy is not available here.',1)}ta.remove()};try{navigator.clipboard.writeText(t).then(()=>toast('Copied'),fb)}catch(e){fb()}}
+function pWeekly(C){
+ const w=st().weekly,B=buildWeekly(),nr=nextRun();WK.msgs=B.msgs;
+ const cb=(k,l)=>'<label class="chk"><input type="checkbox" data-c="wk" data-k="'+k+'"'+(w[k]?' checked':'')+'> '+l+'</label>';
+ const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+ const mon=S.cfg.recips.filter(r=>r.active&&r.type!=='Weekly');
+ return ph('Weekly email reports','Recipients come from the email fields in the Employee Master and the Email Recipients master')+
+ '<div class="note a">This portal prepares every message and the schedule, but it cannot send email by itself. Until a mail service is connected on your side, use “Download outbox” or open each message in your mail app. The schedule below is what a mail job should follow.</div>'+
+ '<div class="card"><h3>Schedule</h3><div class="sub">'+(w.enabled&&nr?'Next run: '+nr.toLocaleString('en-GB',{weekday:'long',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+' ('+esc(w.tz)+')':'Weekly reports are switched off')+'</div><div class="fg">'+cb('enabled','Weekly reports enabled')+
+ '<label>Day<select data-c="wk" data-k="day">'+selOpts(days.map((d,i)=>[i,d]),w.day)+'</select></label><label>Time<input type="time" data-c="wk" data-k="time" value="'+esc(w.time)+'"></label><label>Period covered<select data-c="wk" data-k="range">'+selOpts([['last','Last completed week (Mon–Sun)'],['current','Current week to date']],w.range)+'</select></label></div>'+
+ '<div class="fg" style="margin-top:10px">'+cb('employees','Employees')+cb('managers','Managers')+cb('ams','AMs')+cb('hr','HR')+cb('extra','Extra recipients')+'</div></div>'+
+ '<div class="card"><h3>Monthly management report</h3><div class="sub">Generated on the Monthly management report page. Recipients marked Monthly or Both in the Email Recipients master: '+(mon.length?mon.map(r=>esc(r.name)+' &lt;'+esc(r.email)+'&gt;').join(', '):'none')+'.</div></div>'+
+ '<div class="sec"><h3>Outbox for '+esc(B.label)+' ('+B.msgs.length+' messages)</h3><div class="sp" style="flex:1"></div><button class="btn" data-a="wk_csv">Download outbox (.csv)</button><button class="btn" data-a="wk_all">Download all (.html)</button></div>'+
+ tbl([{h:'To',g:(m,i)=>esc(m.to)},{h:'Audience',g:m=>badge(m.aud,m.aud==='Employee'?'':'b')},{h:'Recipient',g:m=>esc(m.name)},{h:'Cc',g:m=>esc(m.cc||'–')},{h:'Subject',g:m=>esc(m.subject)},{h:'',g:(m,i)=>'<button class="btn s" data-a="wk_prev" data-i="'+i+'">Preview</button>'}],B.msgs.slice(0,300),{max:520,empty:'No recipients yet. Add emails in the Employee Master.'});
+}
+ACT.wk_prev=t=>{const m=WK.msgs[+t.dataset.i];if(!m)return;
+ openModal('<h3>'+esc(m.subject)+'</h3><div class="tag" style="margin-bottom:8px">To: '+esc(m.to)+(m.cc?' · Cc: '+esc(m.cc):'')+'</div><div class="prev">'+m.html+'</div><div class="ft"><button class="btn" data-a="wk_copy" data-i="'+t.dataset.i+'">Copy text</button><button class="btn" data-a="wk_one" data-i="'+t.dataset.i+'">Download .html</button><a class="btn" style="display:inline-flex;align-items:center;text-decoration:none" target="_blank" rel="noopener" href="mailto:'+encodeURIComponent(m.to)+'?subject='+encodeURIComponent(m.subject)+'&body='+encodeURIComponent(m.text.slice(0,1400))+'">Open in mail app</a><button class="btn p" data-a="mclose">Close</button></div>',{wide:1,nofocus:1})};
+ACT.wk_copy=t=>{const m=WK.msgs[+t.dataset.i];if(m)copyText(m.text)};
+ACT.wk_one=t=>{const m=WK.msgs[+t.dataset.i];if(m)saveFile('weekly-'+m.to.replace(/[^a-z0-9]+/gi,'_')+'.html','<!DOCTYPE html><meta charset="utf-8"><title>'+esc(m.subject)+'</title>'+m.html)};
+ACT.wk_all=()=>saveFile('weekly-reports-'+today()+'.html','<!DOCTYPE html><meta charset="utf-8"><title>Weekly reports</title>'+WK.msgs.map(m=>'<h3 style="font-family:Arial">To: '+esc(m.to)+' — '+esc(m.subject)+'</h3>'+m.html+'<hr>').join(''));
+ACT.wk_csv=()=>saveFile('weekly-outbox-'+today()+'.csv',csvText([['To','Cc','Audience','Recipient','Subject','Body (text)']].concat(WK.msgs.map(m=>[m.to,m.cc,m.aud,m.name,m.subject,m.text.replace(/\n/g,' / ')]))));
+CHG.wk=t=>{const k=t.dataset.k,v=t.type==='checkbox'?t.checked:(k==='day'?+t.value:t.value);setCfg('settings',d=>{d=Object.assign(clone(DEF),d);d.weekly=Object.assign(clone(DEF.weekly),d.weekly||{});d.weekly[k]=v;return d}).catch(e=>toast(e.message,1))};
+
+/* ================= masters ================= */
+const FS={
+ employees:{doc:'employees',ent:'employee',get:()=>S.cfg.employees,uniq:['ini','email'],def:()=>({target:st().defaultTarget,role:'Employee',active:true}),
+  fields:[['name','Name','text',1],['ini','Initial','text',1],['email','Email','email',1],['target','Monthly target hours','number',0],['role','Role','select',0,['Employee','Manager','AM','HR']],['hrName','HR name','text',0,'people'],['hrEmail','HR email','email'],['mgrName','Manager name','text',0,'people'],['mgrEmail','Manager email','email'],['amName','AM name','text',0,'people'],['amEmail','AM email','email'],['other','Other reporting emails','text',0,'','Comma-separated'],['active','Active','bool']]},
+ clients:{doc:'clients',ent:'client',get:()=>S.cfg.clients,uniq:['code'],ro:['code'],def:()=>({budget:0,active:true,internal:false}),
+  fields:[['code','Client code','text',1],['name','Client name','text',1],['budget','Monthly budget hours','number'],['owner','Owner'],['email','Reporting email','email'],['internal','Internal (excluded from QC budget)','bool'],['active','Active','bool']]},
+ tasks:{doc:'tasks',ent:'task',get:()=>S.cfg.tasks,uniq:['name'],def:()=>({cat:'FA',bill:'B',active:true}),
+  fields:[['name','Task / project','text',1],['cat','Default category','select',0,CATS.map(c=>[c,CATN[c]])],['bill','Default billing','select',0,[['B','Billable'],['N','Non-billable']]],['est','Standard estimate (hours)','number'],['active','Active','bool']]},
+ recips:{doc:'recips',ent:'recipient',get:()=>S.cfg.recips,uniq:['email'],def:()=>({type:'Both',active:true}),
+  fields:[['name','Name','text',1],['email','Email','email',1],['type','Reports','select',0,['Weekly','Monthly','Both']],['active','Active','bool']]}};
+function diffPair(b,a){if(!b||!a)return[b,a];const x={},y={};Object.keys(a).forEach(k=>{if(JSON.stringify(a[k])!==JSON.stringify(b[k])){x[k]=b[k];y[k]=a[k]}});return[x,y]}
+function openForm(kind,id,only){
+ const D=FS[kind],rec=id?D.get().find(x=>x.id===id):D.def();if(!rec)return;
+ const fields=D.fields.filter(f=>!only||only.indexOf(f[0])>-1);
+ openModal('<h3>'+(id?'Edit ':'Add ')+D.ent+'</h3><form id="mf"><div class="fg">'+fields.map(f=>fld(f[0],f[1],f[2]||'text',rec[f[0]],{req:f[3],opts:Array.isArray(f[4])?f[4]:null,list:typeof f[4]==='string'?f[4]:'',ph:f[5],ro:!!(id&&D.ro&&D.ro.indexOf(f[0])>-1)})).join('')+'</div><datalist id="people">'+S.cfg.employees.map(e=>'<option value="'+esc(e.name)+'">').join('')+'</datalist><div class="err" id="merr"></div><div class="ft"><button type="button" class="btn" data-a="mclose">Cancel</button><button class="btn p">Save</button></div></form>',{wide:1,onSubmit:v=>saveMaster(kind,id,fields,v)});
+}
+async function saveMaster(kind,id,fields,v){
+ const D=FS[kind],vals={},list=D.get();
+ fields.forEach(f=>{let x=v[f[0]];const t=f[2]||'text';if(t==='bool')x=!!x;else if(t==='number')x=x===''||x==null?null:+x;else x=String(x==null?'':x).trim();if(t==='email'&&x)x=x.toLowerCase();if(f[3]&&(x===''||x==null))throw new Error(f[1]+' is required.');vals[f[0]]=x});
+ (D.uniq||[]).forEach(k=>{if(vals[k]!==undefined&&vals[k]!==''&&list.some(x=>x.id!==id&&lc(x[k])===lc(vals[k])))throw new Error('Another '+D.ent+' already uses that '+(k==='ini'?'initial':k)+'.')});
+ if(kind==='employees'&&vals.target==null)vals.target=st().defaultTarget;
+ if(kind==='clients'&&vals.budget==null)vals.budget=0;
+ let before=null,after=null;
+ await setCfg(D.doc,d=>{d.items=d.items||[];if(id){const i=d.items.findIndex(x=>x.id===id);if(i<0)return false;before=Object.assign({},d.items[i]);d.items[i]=Object.assign({},d.items[i],vals);after=d.items[i]}
+  else{const r=Object.assign(D.def(),vals);r.id=kind==='clients'?vals.code:uid();d.items.push(r);after=r}return d});
+ try{const p=diffPair(before,after);await logAudit({action:id?'update':'create',entity:D.ent,ref:vals.name||vals.code||vals.email||'',before:p[0],after:p[1]})}catch(e){}
+ toast(D.ent[0].toUpperCase()+D.ent.slice(1)+' saved');
+}
+function parseRows(text){
+ return text.split(/\r?\n/).filter(l=>l.trim()).map(l=>{const sep=l.indexOf('\t')>-1?'\t':',',o=[];let cur='',q=false;for(let i=0;i<l.length;i++){const c=l[i];if(q){if(c==='"'&&l[i+1]==='"'){cur+='"';i++}else if(c==='"')q=false;else cur+=c}else if(c==='"')q=true;else if(c===sep){o.push(cur.trim());cur=''}else cur+=c}o.push(cur.trim());return o});
+}
+async function doImport(kind,text){
+ let rows=parseRows(text);if(rows.length&&['name','code'].indexOf(lc(rows[0][0]))>-1)rows=rows.slice(1);if(!rows.length)throw new Error('No rows found.');
+ let n=0;
+ await setCfg(kind,d=>{d.items=d.items||[];rows.forEach(r=>{
+  if(kind==='employees'){const email=lc(r[2]);if(!r[0]||!r[1]||!email)return;const rec={name:r[0],ini:r[1].toUpperCase(),email,target:r[3]!==''&&r[3]!=null?+r[3]:st().defaultTarget,mgrName:r[4]||'',mgrEmail:lc(r[5]),amName:r[6]||'',amEmail:lc(r[7]),hrName:r[8]||'',hrEmail:lc(r[9]),other:r[10]||''};
+   const i=d.items.findIndex(x=>lc(x.email)===email);if(i>-1)d.items[i]=Object.assign({},d.items[i],rec);else d.items.push(Object.assign({id:uid(),role:'Employee',active:true},rec));n++}
+  else{const code=(r[0]||'').trim();if(!code||!r[1])return;const rec={code,name:r[1],budget:+r[2]||0,owner:r[3]||'',email:lc(r[4])};const i=d.items.findIndex(x=>x.code===code);if(i>-1)d.items[i]=Object.assign({},d.items[i],rec);else d.items.push(Object.assign({id:code,active:true,internal:false},rec));n++}});return d});
+ try{await logAudit({action:'import',entity:kind==='employees'?'employee':'client',ref:n+' rows imported'})}catch(e){}
+ toast(n+' rows imported');
+}
+ACT.ms_import=t=>{const k=t.dataset.k,hint=k==='employees'?'name, initial, email, target, manager name, manager email, AM name, AM email, HR name, HR email, other emails':'code, name, monthly budget, owner, reporting email';
+ openModal('<h3>Import '+k+'</h3><p class="mut">Paste rows from Excel or a CSV (tab or comma separated). Columns: '+hint+'. Existing records with the same '+(k==='employees'?'email':'code')+' are updated.</p><form id="mf"><div class="fg"><label style="grid-column:1/-1"><textarea name="rows" style="min-height:190px" required></textarea></label></div><div class="err" id="merr"></div><div class="ft"><button type="button" class="btn" data-a="mclose">Cancel</button><button class="btn p">Import</button></div></form>',{wide:1,onSubmit:v=>doImport(k,v.rows)})};
+ACT.mstab=t=>{MS.tab=t.dataset.t;render()};
+ACT.ms_add=t=>openForm(t.dataset.k);
+ACT.ms_edit=t=>openForm(t.dataset.k,t.dataset.id,t.dataset.only?t.dataset.only.split(','):null);
+ACT.ms_del=async t=>{const k=t.dataset.k,D=FS[k],r=D.get().find(x=>x.id===t.dataset.id);if(!r)return;if(!await askConfirm('Delete '+D.ent+'?',esc(r.name||r.code),'Delete'))return;
+ try{await setCfg(D.doc,d=>{d.items=(d.items||[]).filter(x=>x.id!==r.id);return d});try{await logAudit({action:'delete',entity:D.ent,ref:r.name||r.code,before:r})}catch(e){}toast('Deleted')}catch(e){toast(e.message,1)}};
+const yn=b=>b?badge('Active','g'):badge('Inactive','');
+function pMasters(C){
+ const ed=ME.admin,tabs=ed?[['employees','Employees'],['clients','Clients'],['tasks','Projects / tasks'],['hierarchy','Reporting hierarchy'],['targets','Monthly targets'],['budgets','Monthly QC budget'],['recips','Email recipients']]:[['employees','Employees'],['hierarchy','Reporting hierarchy']];
+ if(!tabs.some(t=>t[0]===MS.tab))MS.tab=tabs[0][0];
+ const q=lc(DR.ms.q),E=S.cfg.employees.slice().sort((a,b)=>a.name.localeCompare(b.name)),m=F.month;let body='';
+ const add=(k,l)=>ed?'<button class="btn p" data-a="ms_add" data-k="'+k+'">Add '+l+'</button>':'';
+ const search='<input class="inl" style="width:220px" placeholder="Search…" data-d="ms.q" data-q value="'+esc(DR.ms.q)+'">';
+ const ea=(k,id,only)=>ed?'<button class="btn s" data-a="ms_edit" data-k="'+k+'" data-id="'+id+'"'+(only?' data-only="'+only+'"':'')+'>Edit</button>':'';
+ if(MS.tab==='employees'){const L=E.filter(e=>!q||(e.name+e.ini+e.email).toLowerCase().indexOf(q)>-1);
+  body='<div class="chips" style="margin-bottom:10px">'+search+add('employees','employee')+(ed?'<button class="btn" data-a="ms_import" data-k="employees">Import rows</button>':'')+'<span class="tag" style="align-self:center">'+L.length+' of '+E.length+' · default target '+nf(st().defaultTarget,0)+' h</span></div>'+
+  tbl([{h:'Name',g:e=>esc(e.name)},{h:'Initial',g:e=>esc(e.ini)},{h:'Email',g:e=>esc(e.email)},{h:'Target h',n:1,g:e=>nf(e.target==null?st().defaultTarget:e.target,0)},{h:'Role',g:e=>esc(e.role||'Employee')},{h:'HR',g:e=>esc(e.hrName||'–')+(e.hrEmail?' <span class="mut">'+esc(e.hrEmail)+'</span>':'')},{h:'Manager',g:e=>esc(e.mgrName||'–')+(e.mgrEmail?' <span class="mut">'+esc(e.mgrEmail)+'</span>':'')},{h:'AM',g:e=>esc(e.amName||'–')+(e.amEmail?' <span class="mut">'+esc(e.amEmail)+'</span>':'')},{h:'Other reporting emails',g:e=>esc(e.other||'–')},{h:'Status',g:e=>yn(e.active)},{h:'',g:e=>ea('employees',e.id)}],L,{max:640})}
+ else if(MS.tab==='clients'){const L=S.cfg.clients.slice().sort((a,b)=>codeSort(a.code,b.code)).filter(c=>!q||(c.code+c.name+c.owner).toLowerCase().indexOf(q)>-1);
+  body='<div class="chips" style="margin-bottom:10px">'+search+add('clients','client')+'<button class="btn" data-a="ms_import" data-k="clients">Import rows</button></div>'+tbl([{h:'Code',g:c=>esc(c.code)},{h:'Client name',g:c=>esc(c.name)},{h:'Monthly budget h',n:1,g:c=>nf(c.budget,0)},{h:'Owner',g:c=>esc(c.owner||'–')},{h:'Reporting email',g:c=>esc(c.email||'–')},{h:'Type',g:c=>c.internal?badge('Internal','b'):'Client'},{h:'Status',g:c=>yn(c.active)},{h:'',g:c=>ea('clients',c.id)}],L,{max:640})}
+ else if(MS.tab==='tasks')body='<div class="chips" style="margin-bottom:10px">'+add('tasks','task')+'</div>'+tbl([{h:'Task / project',c:()=>'wrap',g:t=>esc(t.name)},{h:'Category',g:t=>CATN[t.cat]},{h:'Billing',g:t=>t.bill==='B'?'Billable':'Non-billable'},{h:'Std estimate h',n:1,g:t=>t.est?nf(t.est):'–'},{h:'Status',g:t=>yn(t.active)},{h:'',g:t=>ea('tasks',t.id)+(ed?' <button class="btn s d" data-a="ms_del" data-k="tasks" data-id="'+t.id+'">Delete</button>':'')}],S.cfg.tasks.slice().sort((a,b)=>a.name.localeCompare(b.name)),{max:640});
+ else if(MS.tab==='recips')body='<div class="chips" style="margin-bottom:10px">'+add('recips','recipient')+'</div>'+tbl([{h:'Name',g:r=>esc(r.name)},{h:'Email',g:r=>esc(r.email)},{h:'Reports',g:r=>esc(r.type)},{h:'Status',g:r=>yn(r.active)},{h:'',g:r=>ea('recips',r.id)+(ed?' <button class="btn s d" data-a="ms_del" data-k="recips" data-id="'+r.id+'">Delete</button>':'')}],S.cfg.recips,{empty:'No extra recipients. Employees, managers, AMs and HR are picked up from the Employee Master automatically.'})+'<div class="tag" style="margin-top:8px">Employees, managers, AMs and HR receive reports via the email fields in the Employee Master. Use this list for leadership or other copies.</div>';
+ else if(MS.tab==='hierarchy'){const g=groupTeams({eArr:E.map(e=>({e}))},e=>e.mgrName);
+  body='<div class="tag" style="margin-bottom:8px">Manager, AM and HR are stored per employee. Access to dashboards follows these email addresses.</div>'+g.map(x=>'<div class="sec"><h3>Manager: '+esc(x.name)+'</h3><span class="tag">'+x.n+' people</span></div>'+tbl([{h:'Employee',g:r=>esc(r.e.name)+' <span class="mut">'+esc(r.e.ini)+'</span>'},{h:'AM',g:r=>esc(r.e.amName||'–')},{h:'HR',g:r=>esc(r.e.hrName||'–')},{h:'Other reporting emails',g:r=>esc(r.e.other||'–')},{h:'',g:r=>ea('employees',r.e.id,'mgrName,mgrEmail,amName,amEmail,hrName,hrEmail,other')}],x.list)).join('')}
+ else if(MS.tab==='targets'){const tm=(S.cfg.targets.byMonth||{})[m]||{};
+  body='<div class="chips" style="margin-bottom:10px"><label class="f" style="flex-direction:row;gap:6px;align-items:center">Month<input type="month" data-f="month" value="'+m+'"></label><button class="btn" data-a="tg_copy">Copy overrides from '+fMs(prevMonth(m))+'</button><button class="btn d" data-a="tg_reset">Reset month to defaults</button></div>'+
+  tbl([{h:'Employee',g:e=>esc(e.name)},{h:'Default target',n:1,g:e=>nf(e.target==null?st().defaultTarget:e.target,0)},{h:'Target for '+fMs(m),n:1,g:e=>'<input class="inl" type="number" min="0" step="1" data-c="tg" data-id="'+e.id+'" value="'+(tm[e.id]!=null?tm[e.id]:'')+'" placeholder="'+nf(e.target==null?st().defaultTarget:e.target,0)+'">'}],E.filter(e=>e.active),{max:640})+'<div class="tag" style="margin-top:6px">Leave blank to use the employee’s default (150 h unless changed in Settings or the Employee Master).</div>'}
+ else if(MS.tab==='budgets'){const bm=(S.cfg.budgets.byMonth||{})[m]||{},qc=(S.cfg.budgets.qc||{})[m],cl=S.cfg.clients.filter(c=>c.active&&!c.internal).sort((a,b)=>codeSort(a.code,b.code));
+  body='<div class="chips" style="margin-bottom:10px;align-items:flex-end"><label class="f">Month<input type="month" data-f="month" value="'+m+'"></label><label class="f">Company QC budget override (h)<input class="inl" style="width:150px" type="number" min="0" data-c="qc" value="'+(qc!=null&&qc!==''?qc:'')+'" placeholder="'+n0(sum(cl,c=>budgetOf(c.code,m)))+' (sum of clients)"></label><button class="btn" data-a="bg_copy">Copy client budgets from '+fMs(prevMonth(m))+'</button></div>'+
+  tbl([{h:'Client',g:c=>esc(cName(c.code))},{h:'Master budget',n:1,g:c=>nf(c.budget,0)},{h:'Budget for '+fMs(m),n:1,g:c=>'<input class="inl" type="number" min="0" data-c="bg" data-code="'+esc(c.code)+'" value="'+(bm[c.code]!=null?bm[c.code]:'')+'" placeholder="'+nf(c.budget,0)+'">'}],cl,{max:640,foot:1})+'<div class="tag" style="margin-top:6px">Blank uses the client master budget. The company QC budget is the sum of client budgets unless you enter an override.</div>'}
+ return ph('Masters',ed?'Employees, clients, tasks, hierarchy, targets, budgets and recipients':'Read-only view')+'<div class="tabs">'+tabs.map(t=>'<a data-a="mstab" data-t="'+t[0]+'" class="'+(MS.tab===t[0]?'on':'')+'">'+t[1]+'</a>').join('')+'</div>'+body;
+}
+CHG.tg=t=>{const id=t.dataset.id,v=t.value,m=F.month;setCfg('targets',d=>{d.byMonth=d.byMonth||{};const x=d.byMonth[m]=d.byMonth[m]||{};if(v==='')delete x[id];else x[id]=+v;return d}).then(()=>logAudit({action:'update',entity:'monthly target',ref:m+' · '+eName(id),after:{target:v===''?'default':+v}})).catch(e=>toast(e.message,1))};
+CHG.bg=t=>{const c=t.dataset.code,v=t.value,m=F.month;setCfg('budgets',d=>{d.byMonth=d.byMonth||{};d.qc=d.qc||{};const x=d.byMonth[m]=d.byMonth[m]||{};if(v==='')delete x[c];else x[c]=+v;return d}).then(()=>logAudit({action:'update',entity:'client budget',ref:m+' · '+c,after:{budget:v===''?'master':+v}})).catch(e=>toast(e.message,1))};
+CHG.qc=t=>{const v=t.value,m=F.month;setCfg('budgets',d=>{d.byMonth=d.byMonth||{};d.qc=d.qc||{};if(v==='')delete d.qc[m];else d.qc[m]=+v;return d}).then(()=>logAudit({action:'update',entity:'QC budget',ref:m,after:{override:v===''?'none':+v}})).catch(e=>toast(e.message,1))};
+ACT.tg_copy=async()=>{const m=F.month,p=prevMonth(m);try{await setCfg('targets',d=>{d.byMonth=d.byMonth||{};d.byMonth[m]=Object.assign({},d.byMonth[p]||{});return d});toast('Copied')}catch(e){toast(e.message,1)}};
+ACT.tg_reset=async()=>{const m=F.month;if(!await askConfirm('Reset targets?','All overrides for '+fM(m)+' are cleared and defaults apply.','Reset'))return;try{await setCfg('targets',d=>{d.byMonth=d.byMonth||{};delete d.byMonth[m];return d});toast('Reset')}catch(e){toast(e.message,1)}};
+ACT.bg_copy=async()=>{const m=F.month,p=prevMonth(m);try{await setCfg('budgets',d=>{d.byMonth=d.byMonth||{};d.qc=d.qc||{};const src={};S.cfg.clients.filter(c=>c.active&&!c.internal).forEach(c=>{const b=budgetOf(c.code,p);if(b>0)src[c.code]=b});d.byMonth[m]=src;if(d.qc[p]!=null)d.qc[m]=d.qc[p];return d});toast('Copied')}catch(e){toast(e.message,1)}};
+
+/* ================= audit log ================= */
+function pAudit(C){
+ const items=[];Object.keys(S.audit).forEach(k=>(S.audit[k].items||[]).forEach(i=>items.push(i)));items.sort((a,b)=>b.at.localeCompare(a.at));
+ const q=lc(DR.au.q),L=items.filter(i=>!q||(i.actor+i.action+i.entity+i.ref+i.reason).toLowerCase().indexOf(q)>-1);
+ const chg=i=>{const f=v=>v==null?'':typeof v==='object'?Object.keys(v).map(k=>k+': '+v[k]).join(', '):String(v);return i.before||i.after?(i.before?'<div class="mut">'+esc(f(i.before))+'</div>':'')+(i.after?'<div>'+esc(f(i.after))+'</div>':''):'–'};
+ return ph('Audit log','Every admin correction and master-data change · '+fM(F.month),'<label class="f" style="flex-direction:row;gap:6px;align-items:center">Month<input type="month" data-f="month" value="'+F.month+'"></label><input class="inl" style="width:200px" placeholder="Search log…" data-d="au.q" data-q value="'+esc(DR.au.q)+'"><button class="btn" data-a="au_csv">Download CSV</button>')+
+ tbl([{h:'When',g:i=>new Date(i.at).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})},{h:'Actor',g:i=>esc(i.actor)},{h:'Action',g:i=>badge(i.action,i.action==='delete'?'r':i.action==='create'?'g':'a')},{h:'Entity',g:i=>esc(i.entity)},{h:'Record',c:()=>'wrap',g:i=>esc(i.ref)},{h:'Change',c:()=>'wrap',g:chg},{h:'Reason',c:()=>'wrap',g:i=>i.reason?esc(i.reason):'<span class="mut">–</span>'}],L.slice(0,500),{empty:'No audit entries for this month.'});
+}
+ACT.au_csv=()=>{const items=[];Object.keys(S.audit).forEach(k=>(S.audit[k].items||[]).forEach(i=>items.push(i)));items.sort((a,b)=>a.at.localeCompare(b.at));
+ saveFile('audit-log-'+F.month+'.csv',csvText([['When','Actor','Action','Entity','Record','Before','After','Reason']].concat(items.map(i=>[i.at,i.actor,i.action,i.entity,i.ref,JSON.stringify(i.before||''),JSON.stringify(i.after||''),i.reason]))))};
+
+/* ================= settings ================= */
+function pSettings(C){
+ const s=st(),inp=(k,l,t,v,x)=>'<label>'+l+'<input data-c="set" data-k="'+k+'" type="'+t+'" value="'+esc(v)+'" '+(x||'')+'></label>';
+ const lv=(s.leaves||[]).slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,40),hol=(s.holidays||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));
+ return ph('Settings','Capacity, targets, alert thresholds, holidays and leave')+
+ '<div class="card"><h3>Access</h3><div class="sub">'+(Store.mode==='claude'?'Signed in as '+esc(ID.email||ID.name||'unknown')+'. Admins are the people who have edit access to this page.':Store.mode==='firebase'?'Signed in as '+esc(ID.email)+' via this device\'s saved sign-in. Admin rights come from the ADMIN_EMAILS list in the HTML file — ask whoever deployed it to add your email there if you need Admin.':'Running in local demo mode — data stays in this browser only and everyone is Admin.')+' Manager, AM, HR or Employee access comes from the email addresses in the Employee Master.</div>'+
+ (ID.platform&&!ID.email?'<div class="note a">Your account email is not visible to the portal, so non-admin users cannot be matched to employee records. Ask your workspace owner to allow email access for this page.</div>':'')+'</div>'+
+ '<div class="card"><h3>General</h3><div class="fg">'+inp('company','Company name','text',s.company)+inp('dailyCap','Daily capacity (hours)','number',s.dailyCap,'min="1" max="24" step="0.5"')+inp('defaultTarget','Default monthly target (hours)','number',s.defaultTarget,'min="0"')+'<label class="chk"><input type="checkbox" data-c="set" data-k="saturdayWork"'+(s.saturdayWork?' checked':'')+'> Saturdays are working days</label></div></div>'+
+ '<div class="card"><h3>Alert thresholds</h3><div class="fg">'+inp('lowPct','Low chargeable: below % of target pace','number',Math.round(s.lowPct*100),'min="10" max="100"')+inp('ncPct','High non-chargeable: above % of hours','number',Math.round(s.ncPct*100),'min="5" max="100"')+inp('belowTol','Below allocation tolerance (h)','number',s.belowTol,'min="0" step="0.25"')+inp('aboveTol','Above estimate tolerance (h)','number',s.aboveTol,'min="0" step="0.25"')+'</div></div>'+
+ '<div class="g2"><div class="card"><h3>Holidays</h3><div class="sub">Not counted as working days</div><div class="fg"><label>Date<input type="date" id="hol_date"></label><label>Name<input id="hol_name" placeholder="e.g. Independence Day"></label><div><button class="btn" data-a="hol_add">Add</button></div></div><div style="height:8px"></div>'+
+ tbl([{h:'Date',g:h=>fD(h.date)},{h:'Name',g:h=>esc(h.name||'')},{h:'',g:h=>'<button class="btn s d" data-a="hol_del" data-date="'+h.date+'">Remove</button>'}],hol,{empty:'No holidays added.'})+'</div>'+
+ '<div class="card"><h3>Leave register</h3><div class="sub">Reduces capacity and suppresses missing-actual alerts</div><div class="fg"><label>Employee<select id="lv_emp">'+selOpts(empOpts(),'')+'</select></label><label>Date<input type="date" id="lv_date"></label><label>Hours<input type="number" id="lv_h" value="'+s.dailyCap+'" step="0.5" min="0.5"></label><div><button class="btn" data-a="lv_add">Add</button></div></div><div style="height:8px"></div>'+
+ tbl([{h:'Employee',g:l=>esc(eName(l.emp))},{h:'Date',g:l=>fD(l.date)},{h:'Hours',n:1,g:l=>nf(l.hours)},{h:'',g:l=>'<button class="btn s d" data-a="lv_del" data-id="'+l.id+'">Remove</button>'}],lv,{max:300,empty:'No leave recorded.'})+'</div></div>'+
+ '<div class="card" style="margin-top:14px"><h3>Backup &amp; restore</h3><div class="sub">Export everything (employees, clients, allocations, timesheets, settings, audit log) as one file you can keep safe or move to another deployment. Do this regularly, and always before making a big change.</div><div class="chips"><button class="btn p" data-a="export_all">Export all data (backup)</button><button class="btn" data-a="import_all">Import data from backup</button></div></div>'+
+ '<div class="card" style="margin-top:14px"><h3>Demo / reset</h3><div class="sub">Demo data fills the current month with sample allocations and hours based on the layout of your Excel sheets.</div><div class="chips"><button class="btn" data-a="demo_reload">Replace everything with demo data</button><button class="btn d" data-a="wipe">Delete all data and start empty</button></div></div>';
+}
+CHG.set=t=>{const k=t.dataset.k;let v=t.type==='checkbox'?t.checked:t.type==='number'?+t.value:t.value;if(k==='lowPct'||k==='ncPct')v=v/100;if(t.type==='number'&&!isFinite(v))return;
+ setCfg('settings',d=>{d=Object.assign(clone(DEF),d);d[k]=v;return d}).then(()=>toast('Saved')).catch(e=>toast(e.message,1))};
+ACT.hol_add=()=>{const d=$('#hol_date').value,n=$('#hol_name').value.trim();if(!d){toast('Pick a date.',1);return}setCfg('settings',x=>{x=Object.assign(clone(DEF),x);x.holidays=(x.holidays||[]).filter(h=>h.date!==d).concat([{date:d,name:n}]);return x}).catch(e=>toast(e.message,1))};
+ACT.hol_del=t=>setCfg('settings',x=>{x=Object.assign(clone(DEF),x);x.holidays=(x.holidays||[]).filter(h=>h.date!==t.dataset.date);return x}).catch(e=>toast(e.message,1));
+ACT.lv_add=()=>{const e=$('#lv_emp').value,d=$('#lv_date').value,h=+$('#lv_h').value;if(!e||!d||!(h>0)){toast('Choose employee, date and hours.',1);return}setCfg('settings',x=>{x=Object.assign(clone(DEF),x);x.leaves=(x.leaves||[]).filter(l=>!(l.emp===e&&l.date===d)).concat([{id:uid(),emp:e,date:d,hours:h}]);return x}).catch(er=>toast(er.message,1))};
+ACT.lv_del=t=>setCfg('settings',x=>{x=Object.assign(clone(DEF),x);x.leaves=(x.leaves||[]).filter(l=>l.id!==t.dataset.id);return x}).catch(e=>toast(e.message,1));
+async function loadDemo(){try{toast('Loading demo data…');await writeAll(buildDemo(),(i,n)=>{if(i%12===0)toast('Loading… '+Math.round(i/n*100)+'%')});toast('Demo data loaded')}catch(e){toast('Could not load demo data: '+((e&&e.message)||e),1)}}
+ACT.ob_demo=loadDemo;
+ACT.ob_empty=async()=>{try{await Store.set('cfg','settings',clone(DEF))}catch(e){toast(e.message,1)}};
+async function exportAllData(){
+ const dump={cfg:{employees:S.cfg.employees,clients:S.cfg.clients,tasks:S.cfg.tasks,recips:S.cfg.recips,budgets:S.cfg.budgets,targets:S.cfg.targets,history:S.cfg.history,settings:S.cfg.settings},alloc:S.alloc,ts:S.ts,audit:S.audit,exportedAt:new Date().toISOString(),exportedBy:ID.name||ID.email||''};
+ await saveFile('portal-backup-'+today()+'.json',JSON.stringify(dump,null,2));
+}
+async function importAllData(text){
+ let dump;try{dump=JSON.parse(text)}catch(e){throw new Error('That file is not a valid backup (not readable JSON).')}
+ if(!dump||!dump.cfg||!dump.cfg.employees)throw new Error('This does not look like a portal backup file.');
+ await writeAll({cfg:dump.cfg,alloc:dump.alloc||{},ts:dump.ts||{}});
+ if(dump.audit)for(const k in dump.audit)await Store.set('audit',k,dump.audit[k]);
+}
+ACT.export_all=async()=>{try{await exportAllData();toast('Backup downloaded')}catch(e){toast(e.message,1)}};
+ACT.import_all=()=>{
+ const inp=document.createElement('input');inp.type='file';inp.accept='.json,application/json';
+ inp.addEventListener('change',async()=>{
+  const f=inp.files&&inp.files[0];if(!f)return;
+  if(!await askConfirm('Import this backup?','This adds or overwrites employees, clients, allocations, timesheets and settings using the file\u2019s records. Existing records with the same ID are replaced. This cannot be undone.','Import'))return;
+  try{toast('Importing…');const text=await f.text();await importAllData(text);toast('Backup imported')}catch(e){toast(e.message,1)}
+ });
+ inp.click();
+};
+ACT.demo_reload=async()=>{if(!await askConfirm('Replace all data with demo data?','Every employee, client, allocation, timesheet and audit record is deleted first. This cannot be undone.','Replace everything'))return;try{toast('Working…');await wipeAll();await writeAll(buildDemo());toast('Demo data loaded')}catch(e){toast(e.message,1)}};
+ACT.wipe=async()=>{if(!await askConfirm('Delete all data?','Every employee, client, allocation, timesheet and audit record is deleted. You will start with an empty portal. This cannot be undone.','Delete everything'))return;try{await wipeAll();await Store.set('cfg','settings',clone(DEF));PAGE='';toast('All data deleted')}catch(e){toast(e.message,1)}};
+
+/* ================= onboarding, render, events ================= */
+const VIEW={company:dCompany,manager:dManager,team:dTeam,client:dClient,individual:dIndividual,allocation:pAllocation,timesheet:pTimesheet,alerts:pAlerts,reports:pReports,monthly:pMonthly,weekly:pWeekly,masters:pMasters,audit:pAudit,settings:pSettings};
+function onboard(){
+ const inner=ME.admin?'<h2>Set up the portal</h2><p class="mut">Nothing has been created yet. Load demo data to explore every screen with sample employees, clients, allocations and hours, or start empty and add your own masters.</p><div class="chips"><button class="btn p" data-a="ob_demo">Load demo data</button><button class="btn" data-a="ob_empty">Start with an empty portal</button></div>'
+  :'<h2>Portal not set up yet</h2><p class="mut">An administrator needs to set up the portal before it can be used. Please check back soon.</p>';
+ return'<div class="page" style="max-width:680px;margin:8vh auto 0"><div class="card">'+inner+'</div></div>';
+}
+function noAccess(){return'<div class="page" style="max-width:680px;margin:8vh auto 0"><div class="card"><h2>No access yet</h2><p class="mut">'+(ID.email?'Your account ('+esc(ID.email)+') is not linked to an employee record or a reporting role.':'Your account email is not available to the portal.')+' Ask an administrator to add your email in the Employee Master.</p></div></div>'}
+function normalizeF(){if(!/^\d{4}-\d{2}$/.test(F.month))F.month=monthOf(today());if(F.date&&monthOf(F.date)!==F.month)F.date='';if(ME.pure){F.emp=ME.emp?ME.emp.id:'';F.mgr='';F.am='';F.hr=''}}
+function render(){
+ const app=$('#app');if(!app||!S.cfgReady)return;
+ ME=who();
+ if(!S.init){app.innerHTML=onboard();return}
+ if(!ME.admin&&ME.roles.size===0){app.innerHTML=noAccess();return}
+ normalizeF();resubscribe();
+ const pages=PAGES.filter(canSee);if(!pages.some(p=>p.id===PAGE))PAGE=defaultPage(pages);
+ if(PAGE==='audit')subAudit();
+ const C=build();let body;
+ try{body=VIEW[PAGE](C)}catch(e){console.error(e);body='<div class="note r">This page could not be drawn: '+esc(e.message)+'</div>'}
+ const ae=document.activeElement,key=ae&&ae.dataset?(ae.dataset.d?['data-d',ae.dataset.d]:ae.dataset.f?['data-f',ae.dataset.f]:null):null,ss=ae&&ae.selectionStart,y=window.scrollY;
+ app.innerHTML=shell(C,body);
+ if(key){const el=$('['+key[0]+'="'+key[1]+'"]');if(el){el.focus();try{if(ss!=null)el.setSelectionRange(ss,ss)}catch(e){}}}
+ window.scrollTo(0,y);
+}
+function setF(k,v){if(k==='month'){if(!/^\d{4}-\d{2}$/.test(v))return;F.month=v;if(F.date&&monthOf(F.date)!==v)F.date=''}else if(k==='date'){F.date=v;if(v)F.month=monthOf(v)}else F[k]=v;render()}
+function setDraft(el){const p=el.dataset.d.split('.'),g=p[0],k=p[1];if(!DR[g])return;DR[g][k]=el.type==='checkbox'?el.checked:el.value;if((g==='al'||g==='ts')&&(k==='task'||k==='client'))applyDefaults(g)}
+ACT.nav=t=>{PAGE=t.dataset.p;NAVOPEN=false;window.scrollTo(0,0);render()};
+ACT.burger=()=>{NAVOPEN=!NAVOPEN;render()};
+ACT.resetf=()=>{Object.assign(F,{date:'',emp:'',mgr:'',am:'',hr:'',client:'',cat:''});render()};
+ACT.mclose=()=>{if(!(MODAL&&MODAL.blocking))closeModal(true)};
+ACT.mok=()=>{if(MODAL&&MODAL.ok)MODAL.ok()};
+ACT.switchacc=()=>switchAccount();
+ACT.theme=()=>{const r=document.documentElement,dark=r.getAttribute('data-theme')?r.getAttribute('data-theme')==='dark':window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches,n=dark?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('tsp_theme',n)}catch(e){}};
+CHG.viewas=t=>{VA=t.value?{email:t.value}:null;PAGE='';TS.emp='';render()};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;if(a==='mbg'){if(e.target===t&&!(MODAL&&MODAL.blocking))closeModal(true);return}const fn=ACT[a];if(fn){if(t.tagName!=='A'||!t.getAttribute('href'))e.preventDefault();fn(t,e)}});
+document.addEventListener('change',e=>{const t=e.target;if(!t.dataset)return;if(t.dataset.f!=null){setF(t.dataset.f,t.value);return}if(t.dataset.d!=null){setDraft(t);if(t.dataset.r!=null)render();return}const c=t.dataset.c;if(c&&CHG[c])CHG[c](t);
+ if(t.getAttribute&&t.getAttribute('list')==='people'&&t.name&&/Name$/.test(t.name)){const p=S.cfg.employees.find(x=>lc(x.name)===lc(t.value)),el=t.form&&t.form.elements[t.name.replace(/Name$/,'Email')];if(p&&el&&!el.value)el.value=p.email}});
+document.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.d!=null){setDraft(t);if(t.dataset.q!=null)sched()}});
+document.addEventListener('submit',e=>{const f=e.target;if(!f||f.id!=='mf')return;e.preventDefault();if(!MODAL||!MODAL.onSubmit)return;const v={};new FormData(f).forEach((x,k)=>{v[k]=x});$$('input[type=checkbox]',f).forEach(c=>{v[c.name]=c.checked});
+ const btn=$('.btn.p',f);if(btn)btn.disabled=true;
+ Promise.resolve().then(()=>MODAL.onSubmit(v)).then(r=>{if(r!==false)closeModal()}).catch(err=>{const el=$('#merr');if(el)el.textContent=(err&&err.message)||String(err)}).then(()=>{if(btn)btn.disabled=false})});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&MODAL&&!MODAL.blocking)closeModal(true);const t=e.target;if((e.key==='Enter'||e.key===' ')&&t&&t.matches&&t.matches('.nav a')){e.preventDefault();t.click()}});
+function checkGate(){
+ if(!SITE_PASSWORD)return Promise.resolve();
+ try{if(localStorage.getItem('tsp_gate')===SITE_PASSWORD)return Promise.resolve()}catch(e){}
+ return new Promise(res=>{
+  const app=$('#app');
+  app.innerHTML='<div style="min-height:100vh;display:grid;place-items:center;padding:16px"><div class="card" style="max-width:340px;width:100%"><h3>This portal is password protected</h3><p class="sub" style="margin:2px 0 12px">Ask your admin for the password.</p><form id="gf"><div class="fg"><label>Password<input type="password" id="gpw" autofocus></label></div><div class="err" id="gerr"></div><div class="ft" style="justify-content:flex-start"><button class="btn p">Unlock</button></div></form></div></div>';
+  $('#gf').addEventListener('submit',e=>{e.preventDefault();const v=$('#gpw').value;
+   if(v===SITE_PASSWORD){try{localStorage.setItem('tsp_gate',v)}catch(er){}res()}
+   else{$('#gerr').textContent='Incorrect password.';$('#gpw').value='';$('#gpw').focus()}});
+ });
+}
+async function boot(){
+ try{const th=localStorage.getItem('tsp_theme');if(th)document.documentElement.setAttribute('data-theme',th)}catch(e){}
+ await checkGate();
+ await Store.init();await initIdentity();startCfg();render();
+}
+boot().catch(e=>{const a=$('#app');if(a)a.innerHTML='<div class="boot">The portal could not start: '+esc((e&&e.message)||e)+'</div>'});
+window.__portal={S,F,build:()=>{ME=who();normalizeF();return build()},render,VIEW,ACT,setF,loadDemo,buildDemo,getAlerts,who,Store,setPage:p=>{PAGE=p}};
+})();
+</script>
+</body>
+</html>
